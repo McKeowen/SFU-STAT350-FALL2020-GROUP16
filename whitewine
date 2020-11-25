@@ -1,0 +1,220 @@
+mynames = c("fixed_acidity", "volatile_acidity", "citric_acid", "residual_sugar", "chlorides", "free_sulfur_dioxide", "total_sulfur_dioxide", "density", "pH", "sulphates", "alcohol", "quality")
+
+whitewine = read.csv("winequality-white.csv", header=FALSE ,sep=";", skip = 1, stringsAsFactors = FALSE)
+names(whitewine) = mynames
+
+dim(whitewine)
+
+sapply(whitewine, class)
+
+whiteinfo = summary(whitewine)
+
+#whitepairs = pairs(whitewine)
+
+#add median point
+library(stringr)
+mydatapoints = vector(mode = 'numeric', length = 12)
+
+for (i in 1:12) {
+  med = as.numeric(str_extract(whiteinfo[3,i], "\\d+\\.*\\d*")) #extracts value from summary
+  mydatapoints[i] = med
+}
+
+whitewine = rbind(whitewine, mydatapoints)
+
+#histograms
+
+library(ggplot2)
+library(gridExtra)
+
+#histogram of the dependent variable 
+histo_y = ggplot(aes(quality), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 1) +
+  ggtitle('Histogram of Quality')
+
+#histogram of fixed acidity
+histo_x1 = ggplot(aes(fixed_acidity), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.2) +
+  ggtitle('Histogram of Fixed Acidity')
+
+#histogram of volatile acidity
+histo_x2 = ggplot(aes(volatile_acidity), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.02) +
+  ggtitle('Histogram of Volatile Acidity')
+
+#histogram of citric acid
+histo_x3 = ggplot(aes(citric_acid), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.01) +
+  ggtitle('Histogram of Citric Acid')
+
+histo_x3.2 = ggplot(aes(log10(citric_acid)), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.1) +
+  ggtitle('Histogram of Citric Acid')
+
+#histogram of residual sugar
+histo_x4 = ggplot(aes(residual_sugar), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.2) +
+  ggtitle('Histogram of Residual Sugar')
+
+histo_x4.2 = ggplot(aes(log10(residual_sugar)), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.02) +
+  ggtitle('Histogram of Residual Sugar')
+
+#histogram of chlorides
+histo_x5 = ggplot(aes(chlorides), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.005) +
+  ggtitle('Histogram of Chlorides')
+
+#histogram of free sulfur dioxide
+histo_x6 = ggplot(aes(free_sulfur_dioxide), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 1) +
+  ggtitle('Histogram of Free Sulfur Dioxide')
+
+#histogram of total sulfur dioxide
+histo_x7 = ggplot(aes(total_sulfur_dioxide), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 5) +
+  ggtitle('Histogram of Total Sulfur Dioxide')
+
+#histogram of density
+histo_x8 = ggplot(aes(density), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.0005) +
+  ggtitle('Histogram of Density')
+
+#histogram of pH
+histo_x9 = ggplot(aes(pH), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.02) +
+  ggtitle('Histogram of pH')
+
+#histogram of sulphates
+histo_x10 = ggplot(aes(sulphates), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.02) +
+  ggtitle('Histogram of Sulphates')
+
+#histogram of alcohol
+histo_x11 = ggplot(aes(alcohol), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.1) +
+  ggtitle('Histogram of Alcohol')
+
+histo_x11.2 = ggplot(aes(log10(alcohol)), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 0.01) +
+  ggtitle('Histogram of Alcohol')
+
+grid.arrange(histo_y, histo_x1, histo_x2, histo_x3, histo_x4, histo_x5, histo_x6, histo_x7, histo_x8, histo_x9, histo_x10, histo_x11, ncol = 4)
+
+#grouped plot
+
+histo_y = ggplot(aes(quality), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 1) +
+  ggtitle('Histogram of Quality')
+
+group_x1 = ggplot(aes(quality, fixed_acidity), data = whitewine) + 
+  ggtitle("Grouped Plot of Fixed Acidity vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x2 = ggplot(aes(quality, volatile_acidity), data = whitewine) + 
+  ggtitle("Grouped Plot of Volatile Acidity vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x3 = ggplot(aes(quality, citric_acid), data = whitewine) + 
+  ggtitle("Grouped Plot of Citric Acid vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x4 = ggplot(aes(quality, residual_sugar), data = whitewine) + 
+  ggtitle("Grouped Plot of Residual Sugar vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x5 = ggplot(aes(quality, chlorides), data = whitewine) + 
+  ggtitle("Grouped Plot of Chlorides vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x6 = ggplot(aes(quality, free_sulfur_dioxide), data = whitewine) + 
+  ggtitle("Grouped Plot of Free Sulfur Dioxide vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x7 = ggplot(aes(quality, total_sulfur_dioxide), data = whitewine) + 
+  ggtitle("Grouped Plot of Total Sulfur Dioxide vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x8 = ggplot(aes(quality, density), data = whitewine) + 
+  ggtitle("Grouped Plot of Density vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x9 = ggplot(aes(quality, pH), data = whitewine) + 
+  ggtitle("Grouped Plot of pH vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x10 = ggplot(aes(quality, sulphates), data = whitewine) + 
+  ggtitle("Grouped Plot of Sulphates vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") +  
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+group_x11 = ggplot(aes(quality, alcohol), data = whitewine) + 
+  ggtitle("Grouped Plot of Alcohol vs Quality") +
+  geom_jitter(width = 0.25, alpha = 0.1, colour = "seagreen4") + 
+  geom_smooth(method = "lm", se = FALSE, colour = "black")
+
+grid.arrange(histo_y, group_x1, group_x2, group_x3, group_x4, group_x5, group_x6, group_x7, group_x8, group_x9, group_x10, group_x11, ncol = 4)
+
+#boxplots of each variable with respect to quality
+
+histo_y = ggplot(aes(quality), data = whitewine) +
+  geom_histogram(aes(color=I('black'), fill=I('seagreen4')), binwidth = 1) +
+  ggtitle('Histogram of Quality')
+
+box_x1 = ggplot(aes(quality, fixed_acidity), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Fixed Acidity vs Quality") 
+
+box_x2 = ggplot(aes(quality, volatile_acidity), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Volatile Acidity vs Quality")
+
+box_x3 = ggplot(aes(quality, citric_acid), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Citric Acid vs Quality")
+
+box_x4 = ggplot(aes(quality, residual_sugar), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Residual Sugar vs Quality")
+
+box_x5 = ggplot(aes(quality, chlorides), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Chlorides vs Quality")
+
+box_x6 = ggplot(aes(quality, free_sulfur_dioxide), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Free Sulfur Dioxide vs Quality")
+
+box_x7 = ggplot(aes(quality, total_sulfur_dioxide), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Total Sulfur Dioxide vs Quality")
+
+box_x8 = ggplot(aes(quality, density), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Density vs Quality")
+
+box_x9 = ggplot(aes(quality, pH), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of pH vs Quality")
+
+box_x10 = ggplot(aes(quality, sulphates), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Sulphates vs Quality")
+
+box_x11 = ggplot(aes(quality, alcohol), data = whitewine) + 
+  geom_boxplot(aes(group = whitewine$quality), fill = "seagreen4") +
+  ggtitle("Boxplot of Alcohol vs Quality")
+
+grid.arrange(histo_y, box_x1, box_x2, box_x3, box_x4, box_x5, box_x6, box_x7, box_x8, box_x9, box_x10, box_x11, ncol = 4)
+
+
+whitemodel = lm(quality ~., data=whitewine)
