@@ -12,6 +12,7 @@ library(latexpdf)
 library(stringr)
 library(ggplot2)
 library(gridExtra)
+library(car)
 ```
 # Abstract
 This is where the abstract will take place
@@ -385,6 +386,33 @@ print(c(point1, point2, point3, Hmax))
 <br />
 
 Comparing the values to the $h_{max}$, all the values are inside the RVH. Hence, we conclude all data points fall under interpolation and is safe to make predictions at given our current model.
+
+> Multicollinearity
+
+In the pairs plot above, we suspected that there may be near linear relationship between some of the regressor variables in the data. We will conduct a diagnostics since multicollinearity will cause a serious problem that may dramatically impact the usefulness of the linear model. We will use the variance inflation factor (VIF) to check.
+
+```{r}
+vif(red.mdl)
+```
+<br />
+
+Although VIF for fixed acidity are large, but it is not larger than 10, the rule-of-thumb that our textbook suggests. In fact, none of the VIFs are larger than 10, so we will conclude that there are no serious issues regarding multicollinearity. We will deal with multicollinearity later on. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
