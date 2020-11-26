@@ -308,6 +308,12 @@ box_x11 = ggplot(aes(quality, alcohol), data = red.wine) +
 ```{r}
 grid.arrange(hist_y, box_x1, box_x2, box_x3, box_x4, box_x5, box_x6, box_x7, box_x8, box_x9, box_x10, box_x11, ncol = 4)
 ```
+<br />
+
+Comments on the bar plots.
+
+<br />
+
 
 # Methods
 
@@ -336,6 +342,8 @@ summary(red.mdl)
 
 There are a couple of things that we notice from the summary of the linear model. 
 
+* Fixed acidity, residual sugar, free sulfur dioxide, sulphates, and alcohol have a positive relationship with red wine quality.
+* Volatile acidity, citric acid, chlorides, total sulfur dioxide, density, and pH have a negative relationship with red wine quality.
 * The P-value of the overall regression is significantly small, which suggests that there is a linear association between at least one of the regressors and the wine quality.
 * The adjusted R-squared value is 0.3561 (35.61%), which implies that our linear model is not doing a good job at predicting the values. 
 * Looking at the individual P-values, fixed acidity, citric acid, residual sugar and density seem to be insignificant given that all the other variables are in the model. 
@@ -350,41 +358,33 @@ anova(red.mdl)
 
 The anova test conducts a partial F-test, and supports our hypothesis that citric acid and residual sugar variable seem to be insiginificant to the linear model given that the variables before them are already included in the model.
 
-To check which of the variables must be selected in building the model, we will conduct the variable selection.
-
-> Variable Selection
-
-```{r}
-step(red.mdl, direction = "both")
-```
-Based on the stepwise variable selection based on the AIC values, only 7 regressors are included in the model, which include volatile acidity, chlorides, free sulfur dioxide, total sulfur dioxide, pH, sulphates, and alcohol. 
-
-Hence, the final model would be 
-quality = $\beta_0$ + $\beta_1$ * volatile acidity + $\beta_2$ * chlorides + $\beta_3$ * free sulfur dioxide + $\beta_4$ * total sulfur dioxide + $\beta_5$ * pH + $\beta_6$ * sulphates + $\beta_7$ * alcohol. 
-
-> Regressing The Final Model
-
-```{r}
-red.fin = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + pH + sulphates + alcohol, data=red.wine)
-summary(red.fin)
-```
-
-We can recognize the following from the summary of the final model. 
-
-* The P-value of the overall regression is significantly small, which suggests that there is a linear association between at least one of the regressors and the wine quality.
-* The adjusted R-squared value is 0.3566 (35.66%), which is not much of an increase from the originial model. This implies that we might need to transform the data and deal with the influential points.
-
-<br />
-
-## Model Assessment
-<br />
+To check which of the variables must be selected in building the model, we will conduct a variable selection later on.
 
 > Hidden Extrapolation
 
+It is fairly easy to inadvertently extrapolate, so we will go through the formal procedure to look for hidden extrapolation. First, we will obtain the hat matrix to see if certain data points are within the regressor variable hull (RVH).
+
 ```{r}
 X = cbind(c(1, nrow(red.wine)), red.wine$fixed.acidity, red.wine$volatile.acidity, red.wine$citric.acid, red.wine$residual.sugar, red.wine$chlorides, red.wine$free.sulfur.dioxide, red.wine$total.sulfur.dioxide, red.wine$density, red.wine$pH, red.wine$sulphates, red.wine$alcohol, red.wine$quality)
+H = X %*% solve(t(X) %*% X) %*% t(X)
+hii = diag(H)
+plot(hii)
+identify(hii,plot=TRUE)
+Hmax = max(diag(H))
 ```
+<br />
 
+Using the identify() function, we can see that the 152, 259, and 481st indeces from the $h_{ii}$ matrix look a bit far away from other points. Hence, we will check if we are unknowingly extrapolating for these points.
+
+```{r}
+point1 = hii[152]
+point2 = hii[259]
+point3 = hii[481]
+print(c(point1, point2, point3, Hmax))
+```
+<br />
+
+Comparing the values to the $h_{max}$, all the values are inside the RVH. Hence, we conclude all data points fall under interpolation and is safe to make predictions at given our current model.
 
 
 
