@@ -362,7 +362,7 @@ To check which of the variables must be selected in building the model, we will 
 
 > Hidden Extrapolation
 
-It is fairly easy to inadvertently extrapolate, so we will go through the formal procedure to look for hidden extrapolation. First, we will obtain the hat matrix to see if certain data points are within the regressor variable hull (RVH).
+It is fairly easy to inadvertently extrapolate when doing multiple regression, so we will go through the formal procedure to look for hidden extrapolation. First, we will obtain the hat matrix to see if certain data points are within the regressor variable hull (RVH).
 
 ```{r}
 X = cbind(c(1, nrow(red.wine)), red.wine$fixed.acidity, red.wine$volatile.acidity, red.wine$citric.acid, red.wine$residual.sugar, red.wine$chlorides, red.wine$free.sulfur.dioxide, red.wine$total.sulfur.dioxide, red.wine$density, red.wine$pH, red.wine$sulphates, red.wine$alcohol, red.wine$quality)
