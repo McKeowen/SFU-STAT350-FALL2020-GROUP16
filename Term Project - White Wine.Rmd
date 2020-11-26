@@ -12,6 +12,7 @@ library(latexpdf)
 library(stringr)
 library(ggplot2)
 library(gridExtra)
+library(faraway)
 ```
 
 # Data Description
@@ -154,7 +155,7 @@ white.hist_x11 = ggplot(aes(alcohol), data = white.wine) +
 
 
 ```{r}
-grid.arrange(white.hist_y, white.hist_x1, white.hist_x2, hist_x3, white.hist_x4, white.hist_x5, white.hist_x6, white.hist_x7, white.hist_x8, white.hist_x9, white.hist_x10, white.hist_x11, ncol = 4)
+grid.arrange(white.hist_y, white.hist_x1, white.hist_x2, white.hist_x3, white.hist_x4, white.hist_x5, white.hist_x6, white.hist_x7, white.hist_x8, white.hist_x9, white.hist_x10, white.hist_x11, ncol = 4)
 ```
 <br />
 
@@ -376,8 +377,34 @@ point11 = hii2[485]
 point22 = hii2[1218]
 point33 = hii2[2782]
 point44 = hii2[4746]
-print(c(point11, point22, point33, point44,Hmax))
+print(c(point11, point22, point33, point44,Hmax2))
 ```
 <br />
 
 Comparing the values to the $h_{max}$, all the values are inside the RVH. Hence, we conclude all data points fall under interpolation and is safe to make pwhiteictions at given our current model.
+
+> Multicollinearity
+
+In the pairs plot above, we suspected that there may be near linear relationship between some of the regressor variables in the data. We will conduct a diagnostics since multicollinearity will cause a serious problem that may dramatically impact the usefulness of the linear model. We will use the variance inflation factor (VIF) to check.
+
+```{r}
+vif(white.mdl)
+```
+<br />
+
+The rule-of-thumb that the textbook suggests that VIF larger than 10 will cause serious problems with multicollinearity. Here, VIF for residual sugar and density are larger than 10 and therefore we have a problem. We will look more into this multicollinearity later on. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

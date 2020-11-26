@@ -12,7 +12,7 @@ library(latexpdf)
 library(stringr)
 library(ggplot2)
 library(gridExtra)
-library(car)
+library(faraway)
 ```
 # Abstract
 This is where the abstract will take place
