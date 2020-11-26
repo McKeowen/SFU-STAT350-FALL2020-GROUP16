@@ -369,9 +369,8 @@ It is fairly easy to inadvertently extrapolate when doing multiple regression, s
 X = cbind(c(1, nrow(red.wine)), red.wine$fixed.acidity, red.wine$volatile.acidity, red.wine$citric.acid, red.wine$residual.sugar, red.wine$chlorides, red.wine$free.sulfur.dioxide, red.wine$total.sulfur.dioxide, red.wine$density, red.wine$pH, red.wine$sulphates, red.wine$alcohol, red.wine$quality)
 H = X %*% solve(t(X) %*% X) %*% t(X)
 hii = diag(H)
-plot(hii)
-identify(hii,plot=TRUE)
 Hmax = max(diag(H))
+plot(hii)
 ```
 <br />
 
