@@ -30,6 +30,7 @@ First, we will read the red wine data and look at the fundamentals of the data. 
 
 ```{r, eval=TRUE}
 red.wine = read.csv("winequality-red.csv", header=TRUE, sep=";")
+red.wine
 names(red.wine)
 dim(red.wine)
 sapply(red.wine, class)
@@ -80,86 +81,51 @@ Now for the last step before going into fitting the model into a linear model, w
 hist_y = ggplot(aes(quality), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 1) +
   ggtitle('Histogram of Quality') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 hist_x1 = ggplot(aes(fixed.acidity), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.2) +
   ggtitle('Histogram of Fixed Acidity') + theme(plot.title = element_text(size=8))
-```
 
-
-```{r}
 hist_x2 = ggplot(aes(volatile.acidity), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.02) +
   ggtitle('Histogram of Volatile Acidity') + theme(plot.title = element_text(size=7.5))
-```
 
-```{r}
 hist_x3 = ggplot(aes(citric.acid), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.05) +
   ggtitle('Histogram of Citric Acid') + theme(plot.title = element_text(size=8))
-```
 
-
-```{r}
 hist_x4 = ggplot(aes(residual.sugar), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.5) +
   ggtitle('Histogram of Residual Sugar') + theme(plot.title = element_text(size=6.7))
-```
 
-
-```{r}
 hist_x5 = ggplot(aes(chlorides), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.05) +
   ggtitle('Histogram of Chlorides') + theme(plot.title = element_text(size=8.5))
-```
 
-
-```{r}
 hist_x6 = ggplot(aes(free.sulfur.dioxide), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 3) +
   ggtitle('Histogram of Free Sulfur Dioxide') + theme(plot.title = element_text(size=6))
-```
 
-
-```{r}
 hist_x7 = ggplot(aes(total.sulfur.dioxide), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 8) +
   ggtitle('Histogram of Total Sulfur Dioxide') + theme(plot.title = element_text(size=6))
-```
 
-
-```{r}
 hist_x8 = ggplot(aes(density), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.0005) +
   ggtitle('Histogram of Density') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 hist_x9 = ggplot(aes(pH), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.02) +
   ggtitle('Histogram of pH') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 hist_x10 = ggplot(aes(sulphates), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.1) +
   ggtitle('Histogram of Sulphates') + theme(plot.title = element_text(size=8))
-```
 
-
-```{r}
 hist_x11 = ggplot(aes(alcohol), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.3) +
   ggtitle('Histogram of Alcohol') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 grid.arrange(hist_y, hist_x1, hist_x2, hist_x3, hist_x4, hist_x5, hist_x6, hist_x7, hist_x8, hist_x9, hist_x10, hist_x11, ncol = 4)
 ```
 <br />
@@ -278,7 +244,7 @@ There are a couple of things that we can see from the boxplots above.
 
 <br />
 
-## Multiple Linear Regression
+## Multiple Linear Regression - Full Model
 <br />
 
 > Pairs Plot
@@ -304,7 +270,7 @@ There are a couple of things that we notice from the summary of the linear model
 * Fixed acidity, residual sugar, free sulfur dioxide, sulphates, and alcohol have a positive relationship with red wine quality.
 * Volatile acidity, citric acid, chlorides, total sulfur dioxide, density, and pH have a negative relationship with red wine quality.
 * The P-value of the overall regression is significantly small, which suggests that there is a linear association between at least one of the regressors and the red wine quality.
-* The adjusted R-squared value is 0.3561 (35.61%), which implies that our linear model fit to the data is not satisfactory.
+* The adjusted R-squared value is 0.3561 (35.61%), which implies that our linear model fit to the data is not satisfactory. In fact, only 35% of the data can be explained by the model.
 * Looking at the individual P-values, fixed acidity, citric acid, residual sugar and density seem to be insignificant given that all the other variables are in the model. 
 
 In order to see if some of the regressors are insignificant to the regression, we will first run the anova test.
@@ -355,7 +321,59 @@ vif(red.mdl)
 
 Although VIF for fixed acidity are large, but it is not larger than 10, the rule-of-thumb that our textbook suggests. In fact, none of the VIFs are larger than 10, so we will conclude that there are no serious issues regarding multicollinearity. 
 
+# Model Assessment
+<br />
 
+> Residual Analysis
+
+We will first go over the graphic analysis of the residuals to check if the error are i.i.d. normally distributed, with zero mean and constant variance.
+
+##### Residual vs. Fitted
+
+```{r}
+plot(red.mdl, which=1)
+```
+<br />
+
+Comments on the residual vs. fitted plot
+
+<br />
+
+
+##### Normal Q-Q
+
+```{r}
+plot(red.mdl, which=2)
+```
+<br />
+
+We observe that the residuals for our model meet the normality assumption. There seems to be a slight negative skew to the distribution of the residuals, although it is not too much of a concern. Also, there are some potential influential points. We will look at this in a moment. 
+
+<br />
+
+
+##### Scale-Location
+
+```{r}
+plot(red.mdl, which=3)
+```
+<br />
+
+Comments on the Scale-Location Plot
+
+<br />
+
+
+##### Residuals vs. Leverage
+
+```{r}
+plot(red.mdl, which=5)
+```
+<br />
+
+Comments on the Residuals vs. Leverage Plot
+
+<br />
 
 
 
