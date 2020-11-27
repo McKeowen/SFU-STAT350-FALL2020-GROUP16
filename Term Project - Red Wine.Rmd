@@ -164,7 +164,11 @@ grid.arrange(hist_y, hist_x1, hist_x2, hist_x3, hist_x4, hist_x5, hist_x6, hist_
 ```
 <br />
 
-Comments on the histogram.
+There are a couple of things that we can see from the histograms above.
+
+* Quality variable seem to have a normal distribution, with most of the values concentrated in categories 5, 6, and 7. In other words, there are much more normal wines than excellent or poor ones.
+* Most of the variables have a very heavy right-tail, except for quality, pH, sulphates, and alcohol.
+* Some of the skewed data such as fixed acidity, volatile acidity, or citric acid can be normal when the outliers are detected and fixed.
 
 <br />
 
@@ -178,140 +182,94 @@ group_x1 = ggplot(aes(fixed.acidity, quality), data = red.wine) +
   ggtitle("Fixed Acidity vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 group_x2 = ggplot(aes(volatile.acidity, quality), data = red.wine) + 
   ggtitle("Volatile Acidity vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=8.5))
-```
 
-```{r}
-group_x3 = ggplot(aes(quality, citric.acid), data = red.wine) + 
+group_x3 = ggplot(aes(citric.acid, quality), data = red.wine) + 
   ggtitle("Citric Acid vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
-group_x4 = ggplot(aes(quality, residual.sugar), data = red.wine) + 
+group_x4 = ggplot(aes(residual.sugar, quality), data = red.wine) + 
   ggtitle("Residual Sugar vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=8))
-```
 
-```{r}
-group_x5 = ggplot(aes(quality, chlorides), data = red.wine) + 
+group_x5 = ggplot(aes(chlorides, quality), data = red.wine) + 
   ggtitle("Chlorides vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
-group_x6 = ggplot(aes(quality, free.sulfur.dioxide), data = red.wine) + 
+group_x6 = ggplot(aes(free.sulfur.dioxide, quality), data = red.wine) + 
   ggtitle("Free Sulfur Dioxide vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=7))
-```
 
-```{r}
-group_x7 = ggplot(aes(quality, total.sulfur.dioxide), data = red.wine) + 
+group_x7 = ggplot(aes(total.sulfur.dioxide, quality), data = red.wine) + 
   ggtitle("Total Sulfur Dioxide vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=6.5))
-```
 
-```{r}
-group_x8 = ggplot(aes(quality, density), data = red.wine) + 
+group_x8 = ggplot(aes(density, quality), data = red.wine) + 
   ggtitle("Density vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
-group_x9 = ggplot(aes(quality, pH), data = red.wine) + 
+group_x9 = ggplot(aes(pH, quality), data = red.wine) + 
   ggtitle("pH vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") +  
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
-group_x10 = ggplot(aes(quality, sulphates), data = red.wine) + 
+group_x10 = ggplot(aes(sulphates, quality), data = red.wine) + 
   ggtitle("Sulphates vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
-group_x11 = ggplot(aes(quality, alcohol), data = red.wine) + 
+group_x11 = ggplot(aes(alcohol, quality), data = red.wine) + 
   ggtitle("Alcohol vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
 ```
 
 ```{r, message = FALSE}
-grid.arrange(hist_y, group_x1, group_x2, group_x3, group_x4, group_x5, group_x6, group_x7, group_x8, group_x9, group_x10, group_x11, ncol = 4)
+grid.arrange(group_x1, group_x2, group_x3, group_x4, group_x5, group_x6, group_x7, group_x8, group_x9, group_x10, group_x11, ncol = 4)
 ```
 <br />
 
-Comments on the grouped plots.
+There are a couple of things that we can see from the plots above.
+
+* Fixed acidity, citric acid, sulphates, and alcohol have a positive relationship with quality.
+* Volatile acidity, total sulfur dioxide, and pH have a negative relationship with quality.
+* Rest of the data shows a fairly random pattern.
 
 <br />
 
 
 ```{r}
-box_x1 = ggplot(aes(quality, fixed.acidity), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Fixed Acidity vs Quality") + theme(plot.title = element_text(size=6))
-
-box_x2 = ggplot(aes(quality, volatile.acidity), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Volatile Acidity vs Quality") + theme(plot.title = element_text(size=5.7))
-
-box_x3 = ggplot(aes(quality, citric.acid), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") + 
-  ggtitle("Boxplot of Citric Acid vs Quality") + theme(plot.title = element_text(size=6))
-
-box_x4 = ggplot(aes(quality, residual.sugar), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Residual Sugar vs Quality") + theme(plot.title = element_text(size=6))
-
-box_x5 = ggplot(aes(quality, chlorides), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Chlorides vs Quality") + theme(plot.title = element_text(size=6.5))
-
-box_x6 = ggplot(aes(quality, free.sulfur.dioxide), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Free Sulfur Dioxide vs Quality") + theme(plot.title = element_text(size=4.7))
-
-box_x7 = ggplot(aes(quality, total.sulfur.dioxide), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Total Sulfur Dioxide vs Quality") + theme(plot.title = element_text(size=4.7))
-
-box_x8 = ggplot(aes(quality, density), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of Density vs Quality") + theme(plot.title = element_text(size=6))
-
-box_x9 = ggplot(aes(quality, pH), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") +
-  ggtitle("Boxplot of pH vs Quality") + theme(plot.title = element_text(size=7))
-
-box_x10 = ggplot(aes(quality, sulphates), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") + 
-  ggtitle("Boxplot of Sulphates vs Quality") + theme(plot.title = element_text(size=6.5))
-
-box_x11 = ggplot(aes(quality, alcohol), data = red.wine) + 
-  geom_boxplot(aes(group = quality), fill = "firebrick3") + 
-  ggtitle("Boxplot of Alcohol vs Quality") + theme(plot.title = element_text(size=7))
-```
-
-```{r}
-grid.arrange(hist_y, box_x1, box_x2, box_x3, box_x4, box_x5, box_x6, box_x7, box_x8, box_x9, box_x10, box_x11, ncol = 4)
+par(mfrow = c(1,4))
+boxplot(red.wine$quality, col="slategray2", pch=19, xlab = "quality")
+boxplot(red.wine$fixed.acidity, col="slategray2", pch=19, xlab = "Fixed Acidity")
+boxplot(red.wine$volatile.acidity, col="slategray2", pch=19, xlab = "Volatile Acidity")
+boxplot(red.wine$citric.acid, col="slategray2", pch=19, xlab = "Citric Acid")
+boxplot(red.wine$residual.sugar, col="slategray2", pch=19, xlab = "Residual Sugar")
+boxplot(red.wine$chlorides, col="slategray2", pch=19, xlab = "Chlorides")
+boxplot(red.wine$free.sulfur.dioxide, col="slategray2", pch=19, xlab = "Free Sulfur Dioxide")
+boxplot(red.wine$total.sulfur.dioxide, col="slategray2", pch=19, xlab = "Total Sulfur Dioxide")
+boxplot(red.wine$density, col="slategray2", pch=19, xlab = "Density")
+boxplot(red.wine$pH, col="slategray2", pch=19, xlab = "pH")
+boxplot(red.wine$sulphates, col="slategray2", pch=19, xlab = "Sulphates")
+boxplot(red.wine$alcohol, col="slategray2", pch=19, xlab = "Alcohol")
 ```
 <br />
 
-Comments on the bar plots.
+There are a couple of things that we can see from the boxplots above.
+
+* Citric acid, free sulfur dioxide, total sulfur dioxide, and alcohol are right-skewed. The skewness of the data would not be fixed even after eliminating the outliers.
+* For other variables, detecting the outliers and fixing them will make the distribution more symmetric. However, the some of the outliers seem very far away from the data.
+* Except for density, most of the outliers are on the larger side of the data.
 
 <br />
 
