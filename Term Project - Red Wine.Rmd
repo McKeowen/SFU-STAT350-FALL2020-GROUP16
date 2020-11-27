@@ -353,7 +353,7 @@ vif(red.mdl)
 ```
 <br />
 
-Although VIF for fixed acidity are large, but it is not larger than 10, the rule-of-thumb that our textbook suggests. In fact, none of the VIFs are larger than 10, so we will conclude that there are no serious issues regarding multicollinearity. We will deal with multicollinearity later on. 
+Although VIF for fixed acidity are large, but it is not larger than 10, the rule-of-thumb that our textbook suggests. In fact, none of the VIFs are larger than 10, so we will conclude that there are no serious issues regarding multicollinearity. 
 
 
 
