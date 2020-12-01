@@ -383,7 +383,6 @@ For the outlier detection, we are going to use externally studentized residuals 
 ```{r}
 ti = rstudent(red.mdl)
 plot(red.mdl$fitted.values, ti)
-identify(red.mdl$fitted.values, ti)
 ```
 <br / >
 
@@ -394,18 +393,18 @@ Identifying the points on the plot, 653 and 833rd data are potential outliers. T
 ```{r}
 red.wine.del = red.wine[-c(653,833), ]
 red.mdl.del = lm(quality ~ . , data=red.wine.del)
-red.sum = summary(red.mdl.del)
-red.sum.del = summary(red.mdl)
+red.sum = summary(red.mdl)
+red.sum.del = summary(red.mdl.del)
 red.mse = mean(red.sum$residuals^2)
 red.mse.del = mean(red.sum.del$residuals^2)
-red.sum$coefficients
-red.sum.del$coefficients
-red.mse.del
+red.sum
+red.sum.del
 red.mse
+red.mse.del
 ```
 <br />
 
-Deleting the potential outlier points almost has no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a decrease in $R^2$, which does not seem desirable. Hence, we conclude that points 653 and 833 are not influential.
+Deleting the potential outlier points has almost no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a slight increase in $R^2$, even though the increase does not seem significant. Hence, we conclude that points 653 and 833 are not influential.
 
 Based on the information we acquired from both the residuals vs. fitted values, we may say that the deficiency of the model is due to trying to fit a discrete quality value to a continuous data. 
 
@@ -433,7 +432,7 @@ When interpreting Cook's distance, we categorize the values as follows:
 Even though the maximum value for the Cook's distance is 0.06885, which is even smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look.
 
 ```{r}
-red.wine.del2 = red.wine[-c(152), ]
+red.wine.del2 = red.wine[-152, ]
 red.mdl.del2 = lm(quality ~ . , data=red.wine.del2)
 red.sum.del2 = summary(red.mdl.del2)
 red.mse.del2 = mean(red.sum.del2$residuals^2)
@@ -464,14 +463,12 @@ First, let's try a log transformation to see if it will improve our regression.
 ```{r}
 red.log = lm(log(quality) ~ ., data=red.wine)
 red.log.sum = summary(red.log)
-red.log.mse = mean(red.log.sum$residuals^2)
 red.sum
 red.log.sum
-((red.mse - red.log.mse)/red.mse)*100
 ```
 <br />
 
-By taking logarthims of quality values, estimates of each of the coefficients changed quite a lot. Also, the mean squared error for the regression line decreased by 96.59%, which is a lot. However, the log transformation decreased the $R^2$ value, which is not good.
+By taking logarthims of quality values, estimates of each of the coefficients changed quite a lot. However, the log transformation decreased the $R^2$ value, which is not good.
 
 Since our goal was to improve the model to better fit the data, we will skip further analysis on the log transformation model and move on.
 
@@ -484,16 +481,12 @@ Next, we will do a square-root transformation to see if it will improve our regr
 ```{r}
 red.sqr = lm(sqrt(quality) ~ ., data=red.wine)
 red.sqr.sum = summary(red.sqr)
-red.sqr.mse = mean(red.sqr.sum$residuals^2)
 red.sum
 red.sqr.sum
-red.mse
-red.sqr.mse
-((red.mse - red.sqr.mse)/red.mse)*100
 ```
 <br />
 
-By taking the square-root of quality values, estimates of each of the coefficients changed quite a lot. Also, the mean squared error for the regression line decreased by 95.39%, which is a lot. However, the square-root transformation decreased the $R^2$ value, which is not good.
+By taking the square-root of quality values, estimates of each of the coefficients changed quite a lot. However, the square-root transformation decreased the $R^2$ value, which is not good.
 
 Since our goal was to improve the model to better fit the data, we will skip further analysis on the square-root transformation model and move on.
 

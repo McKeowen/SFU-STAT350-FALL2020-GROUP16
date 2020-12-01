@@ -75,86 +75,51 @@ Now for the last step before going into fitting the model into a linear model, w
 white.hist_y = ggplot(aes(quality), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 1) +
   ggtitle('Histogram of Quality') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 white.hist_x1 = ggplot(aes(fixed.acidity), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.2) +
   ggtitle('Histogram of Fixed Acidity') + theme(plot.title = element_text(size=8))
-```
 
-
-```{r}
 white.hist_x2 = ggplot(aes(volatile.acidity), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.02) +
   ggtitle('Histogram of Volatile Acidity') + theme(plot.title = element_text(size=7.5))
-```
 
-```{r}
 white.hist_x3 = ggplot(aes(citric.acid), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.05) +
   ggtitle('Histogram of Citric Acid') + theme(plot.title = element_text(size=8))
-```
 
-
-```{r}
 white.hist_x4 = ggplot(aes(residual.sugar), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.5) +
   ggtitle('Histogram of Residual Sugar') + theme(plot.title = element_text(size=6.7))
-```
 
-
-```{r}
 white.hist_x5 = ggplot(aes(chlorides), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.05) +
   ggtitle('Histogram of Chlorides') + theme(plot.title = element_text(size=8.5))
-```
 
-
-```{r}
 white.hist_x6 = ggplot(aes(free.sulfur.dioxide), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 3) +
   ggtitle('Histogram of Free Sulfur Dioxide') + theme(plot.title = element_text(size=6))
-```
 
-
-```{r}
 white.hist_x7 = ggplot(aes(total.sulfur.dioxide), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 8) +
   ggtitle('Histogram of Total Sulfur Dioxide') + theme(plot.title = element_text(size=6))
-```
 
-
-```{r}
 white.hist_x8 = ggplot(aes(density), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.0005) +
   ggtitle('Histogram of Density') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 white.hist_x9 = ggplot(aes(pH), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.02) +
   ggtitle('Histogram of pH') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 white.hist_x10 = ggplot(aes(sulphates), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.1) +
   ggtitle('Histogram of Sulphates') + theme(plot.title = element_text(size=8))
-```
 
-
-```{r}
 white.hist_x11 = ggplot(aes(alcohol), data = white.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.3) +
   ggtitle('Histogram of Alcohol') + theme(plot.title = element_text(size=9))
-```
 
-
-```{r}
 grid.arrange(white.hist_y, white.hist_x1, white.hist_x2, white.hist_x3, white.hist_x4, white.hist_x5, white.hist_x6, white.hist_x7, white.hist_x8, white.hist_x9, white.hist_x10, white.hist_x11, ncol = 4)
 ```
 <br />
@@ -173,72 +138,52 @@ white.group_x1 = ggplot(aes(fixed.acidity, quality), data = white.wine) +
   ggtitle("Fixed Acidity vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 white.group_x2 = ggplot(aes(volatile.acidity, quality), data = white.wine) + 
   ggtitle("Volatile Acidity vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=8.5))
-```
 
-```{r}
 white.group_x3 = ggplot(aes(quality, citric.acid), data = white.wine) + 
   ggtitle("Citric Acid vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 white.group_x4 = ggplot(aes(quality, residual.sugar), data = white.wine) + 
   ggtitle("Residual Sugar vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=8))
-```
 
-```{r}
 white.group_x5 = ggplot(aes(quality, chlorides), data = white.wine) + 
   ggtitle("Chlorides vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 white.group_x6 = ggplot(aes(quality, free.sulfur.dioxide), data = white.wine) + 
   ggtitle("Free Sulfur Dioxide vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=7))
-```
 
-```{r}
 white.group_x7 = ggplot(aes(quality, total.sulfur.dioxide), data = white.wine) + 
   ggtitle("Total Sulfur Dioxide vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=6.5))
-```
 
-```{r}
 white.group_x8 = ggplot(aes(quality, density), data = white.wine) + 
   ggtitle("Density vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 white.group_x9 = ggplot(aes(quality, pH), data = white.wine) + 
   ggtitle("pH vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") +  
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 white.group_x10 = ggplot(aes(quality, sulphates), data = white.wine) + 
   ggtitle("Sulphates vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
   geom_smooth(method = "lm", se = FALSE, colour = "black") + theme(plot.title = element_text(size=9))
-```
 
-```{r}
 white.group_x11 = ggplot(aes(quality, alcohol), data = white.wine) + 
   ggtitle("Alcohol vs Quality") +
   geom_jitter(width = 0.25, alpha = 0.1, colour = "firebrick3") + 
@@ -394,7 +339,196 @@ vif(white.mdl)
 
 The rule-of-thumb that the textbook suggests that VIF larger than 10 will cause serious problems with multicollinearity. Here, VIF for residual sugar and density are larger than 10 and therefore we have a problem. We will look more into this multicollinearity later on. 
 
+# Model Assessment
+<br />
 
+> Residual Analysis
+
+We will first go over the graphic analysis of the residuals to check if the error are i.i.d. normally distributed, with zero mean and constant variance.
+
+##### Residual vs. Fitted
+
+```{r}
+plot(white.mdl, which=1)
+```
+<br />
+
+Comments on the residual vs. fitted plot
+
+<br />
+
+
+##### Normal Q-Q
+
+```{r}
+plot(white.mdl, which=2)
+```
+<br />
+
+We observe that the residuals for our model meet the normality assumption. There seems to be a slight negative skew to the distribution of the residuals, although it is not too much of a concern. Also, there are some potential influential points. We will look at this in a moment. 
+
+<br />
+
+
+##### Scale-Location
+
+```{r}
+plot(red.mdl, which=3)
+```
+<br />
+
+Comments on the Scale-Location Plot
+
+<br />
+
+
+##### Residuals vs. Leverage
+
+```{r}
+plot(red.mdl, which=5)
+```
+<br />
+
+Comments on the Residuals vs. Leverage Plot
+
+<br />
+
+> Outlier Detection
+
+Outliers are data points that are not typical of the rest of the data. They can either improve or worsen the fit of the equation, so it is important to investigate each outliers or potential influential points.
+
+For the outlier detection, we are going to use externally studentized residuals and plot them against various values.
+
+```{r}
+white.ti = rstudent(white.mdl)
+plot(white.mdl$fitted.values, white.ti)
+```
+<br / >
+
+Comments on the residual vs. fitted values plot. 
+
+Identifying the points on the plot, 2782and 4746th data points are potential outliers. To investigate the influence of these points on the model, we will obtain an equation with these bservations deleted.
+
+```{r}
+white.wine.del = white.wine[-c(2782,4746), ]
+white.mdl.del = lm(quality ~ . , data=white.wine.del)
+white.sum = summary(white.mdl)
+white.sum.del = summary(white.mdl.del)
+white.mse = mean(white.sum$residuals^2)
+white.mse.del = mean(white.sum.del$residuals^2)
+white.sum
+white.sum.del
+white.mse
+white.mse.del
+```
+<br />
+
+Deleting the potential outlier points have quite an influence on the regression coefficients, which implies that points 2782 and 4746 affect the slope and the intercept of the model. In fact, deleting the points causes a very slight increase in $R^2$ and a slight decrease in the mean square error. Hence, we conclude that points 2782 and 4746 are pretty influential.
+
+<br />
+
+We will plot another Normal Q-Q plot and a residual vs. fitted values plot for further examination.
+
+```{r}
+plot(white.mdl.del, which=2)
+white.del.ti = rstudent(white.mdl.del)
+plot(white.mdl.del$fitted.values, white.del.ti)
+```
+<br />
+
+The Normal Q-Q plot above of the white wine data with points 2782 and 4746 deleted do not indicate any serious departures from normality assumptions. In other words, deletion of a data point did not improve the slight negative skew. Meanwhile, looking at the residual vs. fitted value plot, there is a more random scatter for each quality values. 
+
+Furthermore, based on the information we acquired from both the residuals vs. fitted values, we may say that the deficiency of the model is due to trying to fit a discrete quality value to a continuous data.
+
+Since it was proven that points 2782 and 4746 are affecting the regression coefficients, we will delete these data points and continue with our further analysis.
+
+<br />
+
+> Outlier Diagnostics : Cook's Distance
+
+Cook's distance is one of the ways to measure a point's influence by considering both the location of a point in the x space and the response variable. Points with large values of $D_i$ can be interpreted as an influential point.
+
+```{r}
+white.cooksd = cooks.distance(white.mdl.del)
+max.white.di = max(white.cooksd)
+plot(white.cooksd, pch="*", cex=2, main="Influential Observations by Cook's Distance") 
+abline(h = 10*mean(white.cooksd, na.rm=T), col="red")  # adding the cutoff line
+text(x=1:length(white.cooksd)+1, y=white.cooksd, labels=ifelse(white.cooksd>10*mean(white.cooksd, na.rm=T),names(white.cooksd),""), col="red")
+```
+<br />
+
+When interpreting Cook's distance, we categorize the values as follows:
+
+* $D_i$ > 0.5 : The $i_{th}$ data point is worthy of further investigation as influential
+* $D_i$ > 1 : The $i_{th}$ data point is quite likely to be influential
+* If $D_i$ sticks out from the other values, it is most likely to be influential
+
+Even though the maximum value for the Cook's distance is 0.02268, which is even smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look.
+
+```{r}
+white.wine.del2 = white.wine.del[-3308, ]
+white.mdl.del2 = lm(quality ~ . , data=white.wine.del2)
+white.sum.del2 = summary(white.mdl.del2)
+white.mse.del2 = mean(white.sum.del2$residuals^2)
+white.sum.del
+white.sum.del2
+white.mse.del
+white.mse.del2
+```
+<br />
+
+Deleting the point has no change in $R^2$ and an very slight decrease in mean squared error, which is not seem desirable. Hence, we conclude that the point 3308 is not influential.
+
+As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
+
+<br />
+
+# Transformation
+<br />
+
+Previously, the summary of the full model has told us that our model is not doing a good job in fitting the data. And while analyzing the residuals, we realized the fact that fitting a discrete data into a continuous model may be causing such problem. 
+
+<br />
+
+> Log Transformation
+
+First, let's try a log transformation to see if it will improve our regression.
+
+```{r}
+white.log = lm(log(quality) ~ ., data=white.wine.del)
+white.log.sum = summary(white.log)
+white.sum.del
+white.log.sum
+```
+<br />
+
+By taking logarthims of quality values, estimates of each of the coefficients changed quite a lot. However, the log transformation decreased the $R^2$ value, which is not good.
+
+Since our goal was to improve the model to better fit the data, we will skip further analysis on the log transformation model and move on.
+
+<br />
+
+> Square-Root Transformation
+
+Next, we will do a square-root transformation to see if it will improve our regression.
+
+```{r}
+white.sqr = lm(sqrt(quality) ~ ., data=white.wine.del)
+white.sqr.sum = summary(white.sqr)
+white.sum.del
+white.sqr.sum
+```
+<br />
+
+By taking the square-root of quality values, estimates of each of the coefficients changed quite a lot. However, the square-root transformation decreased the $R^2$ value, which is not good.
+
+Since our goal was to improve the model to better fit the data, we will skip further analysis on the square-root transformation model and move on.
+
+<br />
+
+> Transformation On Ordinal Variables
+
+Taking the discreteness of the quality values into consideration, we will now look into transforming ordinal variables. 
 
 
 
