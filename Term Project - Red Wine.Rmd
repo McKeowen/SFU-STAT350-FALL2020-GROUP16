@@ -30,7 +30,6 @@ First, we will read the red wine data and look at the fundamentals of the data. 
 
 ```{r, eval=TRUE}
 red.wine = read.csv("winequality-red.csv", header=TRUE, sep=";")
-red.wine
 names(red.wine)
 dim(red.wine)
 sapply(red.wine, class)
@@ -375,6 +374,77 @@ Comments on the Residuals vs. Leverage Plot
 
 <br />
 
+> Outlier Detection
+
+Outliers are data points that are not typical of the rest of the data. They can either improve or worsen the fit of the equation, so it is important to investigate each outliers or potential influential points.
+
+For the outlier detection, we are going to use externally studentized residuals and plot them against various values.
+
+```{r}
+ti = rstudent(red.mdl)
+plot(red.mdl$fitted.values, ti)
+identify(red.mdl$fitted.values, ti)
+```
+<br / >
+
+Comments on the residual vs. fitted values plot. 
+
+Identifying the points on the plot, 653 and 833rd data are potential outliers. To investigate the influence of these points on the model, we will obtain an equation with these two observations deleted.
+
+```{r}
+red.wine.del = red.wine[-c(653,833), ]
+red.mdl.del = lm(quality ~ . , data=red.wine.del)
+red.sum = summary(red.mdl.del)
+red.sum.del = summary(red.mdl)
+red.mse = mean(red.sum$residuals^2)
+red.mse.del = mean(red.sum.del$residuals^2)
+red.sum
+red.sum.del
+red.mse.del
+red.mse
+```
+
+Deleting the potential outlier points almost has no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a decrease in $R^2$, which does not seem desirable. Hence, we conclude that points 653 and 833 are not influential.
+
+Based on the information we acquired from both the residuals vs. fitted values, we may say that the deficiency of the model is due to trying to fit a discrete quality value to a continuous data. 
+
+<br />
+
+> Outlier Diagnostics : Cook's Distance
+
+Cook's distance is one of the ways to measure a point's influence by considering both the location of a point in the x space and the response variable. Points with large values of $D_i$ can be interpreted as an influential point.
+
+```{r}
+red.cooksd = cooks.distance(red.mdl)
+max.di = max(red.cooksd)
+plot(red.cooksd, pch="*", cex=2, main="Influential Observations by Cook's Distance") 
+abline(h = 10*mean(red.cooksd, na.rm=T), col="red")  # adding the cutoff line
+text(x=1:length(red.cooksd)+1, y=red.cooksd, labels=ifelse(red.cooksd>10*mean(red.cooksd, na.rm=T),names(red.cooksd),""), col="red")
+```
+<br />
+
+When interpreting Cook's distance, we categorize the values as follows:
+
+* $D_i$ > 0.5 : The $i_{th}$ data point is worthy of further investigation as influential
+* $D_i$ > 1 : The $i_{th}$ data point is quite likely to be influential
+* If $D_i$ sticks out from the other values, it is most likely to be influential
+
+Even though the maximum value for the Cook's distance is 0.06885, which is even smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look.
+
+```{r}
+red.wine.del2 = red.wine[-c(152), ]
+red.mdl.del2 = lm(quality ~ . , data=red.wine.del2)
+red.sum.del2 = summary(red.mdl.del2)
+red.mse.del2 = mean(red.sum.del2$residuals^2)
+red.sum
+red.sum.del2
+red.mse
+red.mse.del2
+```
+
+Unfortunately, deleting the point causes a decrease in $R^2$ and an increase in mean squared errors, which is not seem desirable. Hence, we conclude that the point 152 is not influential.
+
+As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
 
 
 
