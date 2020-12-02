@@ -380,6 +380,7 @@ Comments on the Residuals vs. Leverage Plot
 
 Outliers are data points that are not typical of the rest of the data. They can either improve or worsen the fit of the equation, so it is important to investigate each outliers or potential influential points.
 
+=======
 For the outlier detection, we are going to use externally studentized residuals and plot them against various values.
 
 ```{r}
@@ -497,6 +498,7 @@ Since our goal was to improve the model to better fit the data, we will skip fur
 > Ordinal Variable Regression
 
 Taking the discreteness of the quality values into consideration, we will now look into transforming ordinal variables. 
+>>>>>>> 66422d98b2cf08c8b8037169e05fdc9ee62efa2c 
 
 ```{r}
 
@@ -687,14 +689,50 @@ quality = $\beta_0$ + $\beta_1$ * volatile acidity + $\beta_2$ * chlorides + $\b
 
 
 
+> Cross Validation 
+
+In this section we perform cross validation in order to see how well our model predicts the quality of red wine.We do this by comparing the actual value to the predicted value. We do this by dividing the dataset in such a way that 80 percent of the dataset is part of the training set and 20 percent of the dataset is the testing set. We've repeated the steps of validation 5 times to check the values of R squared, root mean square error and mean absolute error which would show us how the model behaves.
+```{r}
+setwd("C:/Users/surbh/Desktop")
+getwd()
+library(Metrics)
+r_w<- read.csv("winequality-red.csv", header=TRUE,sep=";")
+attach(r_w)
+detach(r_w)
+set.seed(71168)
+no_of_samples = ceiling(0.8*length(r_w$quality))
+
+for(i in 1:5){
+
+training_sample = sample(c(1:length(r_w$quality)),no_of_samples)
+training_sample = sort(training_sample)
+
+train_data <- r_w[training_sample,]
+test_data<- r_w[-training_sample,]
+
+trained_model<- lm(train_data$quality~., data = train_data)
+summary(trained_model) 
+
+preds1 <- predict(trained_model,test_data)
+
+plot(test_data$quality,preds1,xlim=c(4,10),ylim=c(4,10))
+abline(c(0,1))
+
+R.sq=summary(lm(quality~., data = train_data))$r.squared
+root_mean_square_error = rmse(preds1, test_data$quality)
+mean_abs_error = mae(preds1, test_data$quality)
+print(c(i,R.sq,root_mean_square_error,mean_abs_error))
+}
+```
 
 
 
+From our numerical observation, the first thing that we see is the R squared value, it remains to be small and it shows that only 35 percent of the model could be explained whereas an ideal model should have atleast 80 . The next observation is the root mean square error which is the difference between the predicted quality and test quality, for a good model we expect to have smaller differences but in our case it goes up to 0.65. Lastly we look at the mean square errors. Again, the values should be small but in our case it is relatively large which further implies that our model isn't the best.
+
+From our graphical observations, we see that when it comes to predicting the quality 4, the model tends to overestimate the value and when it comes to predicting quality 8, the model underestimates the value. Our model does somewhat predict quality 5 and 6 but there is a huge amount of spread in those areas, that shows that many points are further away from the centre which isn't a good sign
 
 
-
-
-
+>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 
