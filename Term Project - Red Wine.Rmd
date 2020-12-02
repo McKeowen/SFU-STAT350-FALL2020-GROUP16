@@ -60,7 +60,7 @@ Before we begin the data analysis, we will introduce the median point as a new a
 ```{r}
 red.datapoints = vector(mode = 'numeric', length = 12)
 
-for (i in 1:13) {
+for (i in 1:12) {
 red.med = as.numeric(str_extract(red.info[3,i], "\\d+\\.*\\d*")) #extracts value from summary
 red.datapoints[i] = red.med
 }
@@ -377,7 +377,60 @@ Comments on the Residuals vs. Leverage Plot
 
 
 
+```{r}
+setwd("C:/Users/surbh/Desktop")
+getwd()
 
+library(Metrics)
+
+r_w<- read.csv("winequality-red.csv", header=TRUE,sep=";")
+attach(r_w)
+#residual analysis to see if we could use a linear regression to fit the model
+#fitting the model with all the variables
+
+
+
+mdl <- lm(r_w$quality~., data = r_w)
+par(mfrow = c(2, 2))
+
+plot(mdl)
+
+detach(r_w)
+#summary(mdl)
+set.seed(71168)
+
+
+no_of_samples = ceiling(0.8*length(r_w$quality))
+
+for(i in 1:3){
+training_sample = sample(c(1:length(r_w$quality)),no_of_samples)
+training_sample = sort(training_sample)
+
+train_data <- r_w[training_sample,]
+test_data<- r_w[-training_sample,]
+
+trained_model<- lm(train_data$quality~., data = train_data)
+summary(trained_model) 
+
+preds1 <- predict(trained_model,test_data)
+
+plot(test_data$quality,preds1,xlim=c(4,10),ylim=c(4,10))
+abline(c(0,1))
+
+R.sq=summary(lm(quality~., data = train_data))$r.squared
+#RMSPE = RMSE(preds, test_data$quality)
+#MAPE = MAE(preds1, test_data$quality)
+#print(c(i,R.sq,RMSPE,MAPE))
+
+}
+#NSE=1-RMSPE^2/var(test_data$quality) 
+
+#par(mfrow = c(2, 2))
+#plot(mdl)
+
+#want to perform cross validation 
+
+```
 
 
 
