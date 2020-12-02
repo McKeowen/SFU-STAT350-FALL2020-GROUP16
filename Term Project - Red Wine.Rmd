@@ -13,6 +13,8 @@ library(stringr)
 library(ggplot2)
 library(gridExtra)
 library(faraway)
+library(MASS)
+library(olsrr)
 ```
 # Abstract
 This is where the abstract will take place
@@ -320,7 +322,7 @@ vif(red.mdl)
 
 Although VIF for fixed acidity are large, but it is not larger than 10, the rule-of-thumb that our textbook suggests. In fact, none of the VIFs are larger than 10, so we will conclude that there are no serious issues regarding multicollinearity. 
 
-# Model Assessment
+## Model Assessment
 <br />
 
 > Residual Analysis
@@ -449,7 +451,7 @@ As mentioned above, this may be due to trying to fit a discrete quality value to
 
 <br />
 
-# Transformation
+## Transformation
 <br />
 
 Previously, the summary of the full model has told us that our model is not doing a good job in fitting the data. And while analyzing the residuals, we realized the fact that fitting a discrete data into a continuous model may be causing such problem. 
@@ -492,9 +494,195 @@ Since our goal was to improve the model to better fit the data, we will skip fur
 
 <br />
 
-> Transformation On Ordinal Variables
+> Ordinal Variable Regression
 
 Taking the discreteness of the quality values into consideration, we will now look into transforming ordinal variables. 
+
+```{r}
+
+#red.wine$quality = factor(red.wine$quality)
+#red.tran.mdl = polr(quality ~ . , data=red.wine, Hess=TRUE)
+#red.tran.sum = summary(red.tran.mdl)
+```
+<br />
+
+Still figuring out how to do this part ...
+
+<br />
+
+## Variable Selection
+<br />
+
+As we saw in the beginning, some of the variables did not seem significant to our model. Since incorrect model specification can cause serious problems, we will try to find the most appropriate subset of regressors for our model. 
+
+We will first define all the possible candidates then compare their adjusted $R^2$ values.
+
+<br />
+
+#### Best Subset Regression
+
+First step in choosing the best set of regressors for our model, we will fit all the regression equations involving one, two regressors, and so on. Then we will select the subset of predictors that do the best at meeting some well-defined objective criterion, such as a large adjusted $R^2$ value or the small MSE, Mallow's $C_p$, or AIC.
+
+```{r}
+red.ols = ols_step_best_subset(red.mdl)
+plot(red.ols)
+best.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + pH                + sulphates + alcohol, data=red.wine)
+best.red.sum = summary(best.red)
+```
+<br />
+
+Looking at the plots above, the increase in $R^2$ and Adjusted $R^2$ almost flattens by model 7. In fact, change in Mallow's $C_p$ statistic and AIC drastically decreases at model 7 as well. 
+
+Hence, best subset regression tells us that model 7, which has the following variables:
+
+* volatile acidity
+* chlorides
+* free sulfur dioxide
+* total sulfur dioxide
+* pH
+* sulphates
+* alcohol
+
+best meets our criterion, which perfectly aligns with our expectation we had when we saw the large P-values in the full model.
+
+#### Stepwise Regression Methods
+<br />
+
+Since comparing all possible regressions and the best subsets take a lot of time and work, we will choose only a few models by adding or deleting regressors one at a time. Here, keep in mind that we used AIC values to compare each steps. 
+
+> Forward Selection
+
+Start with a model with no regressors included, then we will add regressors as we go on.
+
+```{r}
+start.mdl = lm(quality~1, data=red.wine)
+scope.mdl = lm(quality~., data=red.wine)
+step(start.mdl, direction = "forward", scope=formula(scope.mdl))
+forward.red= lm(quality ~ alcohol + volatile.acidity + sulphates + 
+    total.sulfur.dioxide + chlorides + pH + free.sulfur.dioxide, 
+    data = red.wine)
+forward.red.sum = summary(forward.red)
+```
+<br />
+
+Our final model has 7 of the 11 possible predictors (written in the order they were added):
+
+* alcohol
+* volatile acidity
+* sulphates
+* total sulfur dioxide
+* chlorides
+* pH
+* free sulfur dioxide
+
+Coincidentally, the chosen 7 variables are identical as our choice for best subsets regression.
+
+<br />
+
+> Backward Elimination
+
+Start with a model with all the regressors included, then we will eliminate the insignificant regressors as we go on.
+
+```{r}
+start.mdl2 = lm(quality~., data=red.wine)
+step(start.mdl2, direction = "backward")
+backward.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
+    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
+backward.red.sum = summary(backward.red)
+```
+<br />
+
+Our final model has 7 of the 11 possible predictors (written in their order in the model):
+
+* volatile acidity
+* chlorides
+* free sulfur dioxide
+* total sulfur dioxide
+* pH
+* sulphates
+* alcohol
+
+Again, the chosen 7 variables are identical as our choice for best subsets regression and forward selection.
+
+<br />
+
+> Stepwise Regression
+
+Repeat forward selection and backward elimination.
+
+```{r}
+step(red.mdl, direction= "both")
+both.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
+    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
+both.red.sum = summary(both.red)
+```
+<br />
+
+Our final model has 7 of the 11 possible predictors (written in their order in the model):
+
+* volatile acidity
+* chlorides
+* free sulfur dioxide
+* total sulfur dioxide
+* pH
+* sulphates
+* alcohol
+
+As it turns out, the chosen 7 variables are identical for all our variable selection methods.
+
+<br />
+
+Now, we will compare all our models by their adjusted $R^2$.
+
+```{r}
+# Adjusted R-squared for the full model
+red.rsq = red.sum$adj.r.squared
+red.rsq
+
+# Adjusted R-squared for best subset regression model
+best.red.rsq = best.red.sum$adj.r.squared
+best.red.rsq
+
+# Adjusted R-squared for forward selection model
+forward.red.rsq = forward.red.sum$adj.r.squared
+forward.red.rsq
+
+# Adjusted R-squared for backward elimination model
+backward.red.rsq = backward.red.sum$adj.r.squared
+backward.red.rsq
+
+# Adjusted R-squared for stepwise regression model
+both.red.rsq = both.red.sum$adj.r.squared
+both.red.rsq
+```
+<br />
+
+Clearly, even after selecting the appropriate regressors, the adjusted $R^2$ did not improve. In other words, the subset models do not show much of a higher performance. In fact, as we saw above, all the variable selection models choose the same 7 variables and even generates equal adjusted $R^2$ values.
+
+Hence, from now on, the best model used will be 
+
+quality = $\beta_0$ + $\beta_1$ * volatile acidity + $\beta_2$ * chlorides + $\beta_3$ * free sulfur dioxide + $\beta_4$ * total sulfur dioxide + $\beta_5$ * pH + $\beta_6$ * sulphates + $\beta_7$ * alcohol. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
