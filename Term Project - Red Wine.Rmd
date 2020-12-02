@@ -60,7 +60,7 @@ Before we begin the data analysis, we will introduce the median point as a new a
 ```{r}
 red.datapoints = vector(mode = 'numeric', length = 12)
 
-for (i in 1:12) {
+for (i in 1:13) {
 red.med = as.numeric(str_extract(red.info[3,i], "\\d+\\.*\\d*")) #extracts value from summary
 red.datapoints[i] = red.med
 }
