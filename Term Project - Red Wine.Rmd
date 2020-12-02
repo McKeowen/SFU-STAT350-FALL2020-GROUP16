@@ -421,6 +421,7 @@ Cook's distance is one of the ways to measure a point's influence by considering
 ```{r}
 red.cooksd = cooks.distance(red.mdl)
 max.di = max(red.cooksd)
+max.di
 plot(red.cooksd, pch="*", cex=2, main="Influential Observations by Cook's Distance") 
 abline(h = 10*mean(red.cooksd, na.rm=T), col="red")  # adding the cutoff line
 text(x=1:length(red.cooksd)+1, y=red.cooksd, labels=ifelse(red.cooksd>10*mean(red.cooksd, na.rm=T),names(red.cooksd),""), col="red")
@@ -436,18 +437,18 @@ When interpreting Cook's distance, we categorize the values as follows:
 Even though the maximum value for the Cook's distance is 0.06885, which is even smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look.
 
 ```{r}
-red.wine.del2 = red.wine[-152, ]
+red.wine.del2 = red.wine[-c(152,653,1236), ]
 red.mdl.del2 = lm(quality ~ . , data=red.wine.del2)
 red.sum.del2 = summary(red.mdl.del2)
 red.mse.del2 = mean(red.sum.del2$residuals^2)
-red.sum$coefficients
-red.sum.del2$coefficients
+red.sum
+red.sum.del2
 red.mse
 red.mse.del2
 ```
 <br />
 
-Unfortunately, deleting the point causes a decrease in $R^2$ and an increase in mean squared errors, which is not seem desirable. Hence, we conclude that the point 152 is not influential.
+Unfortunately, deleting the point increases the $R^2$ and decreases the mean squared error value by just a little bit, which is not as desirable. Hence, we conclude that the points 152, 653, and 1236 are not influential.
 
 As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
 
@@ -457,6 +458,8 @@ As mentioned above, this may be due to trying to fit a discrete quality value to
 <br />
 
 Previously, the summary of the full model has told us that our model is not doing a good job in fitting the data. And while analyzing the residuals, we realized the fact that fitting a discrete data into a continuous model may be causing such problem. 
+
+Before we go into transforamtion on ordinal variables, we will try some conventional transformations.
 
 <br />
 
@@ -784,7 +787,7 @@ Here are the things that we notice from our numerical output.
 Now, here are the things that we see from our graphical observations.
 
 * When predicting quality 4, the model tends to overestimate the value.
-* When predicting quality 8, the model tends to underestimate the value.
+* When predicting quality 7 and 8, the model tends to underestimate the value.
 * Our model does predict quality 5 and 6, the huge variability around the value implies that many points are further away from the centre. 
 
 <br />
