@@ -19,10 +19,11 @@ library(Metrics)
 library(caret)
 ```
 # Abstract
-This is where the abstract will take place
+This exploratory data analysis will be examining data pertaining to the red variety of the Portugese "Vinho Verde" wine.   
+Our analysis will begin by graphically representing the data in order to learn more about it.  By constructing visualizations, we can determine the types of relationships between the independent variables and the dependent variable quality.  From there, we will be fitting the data to a linear model, and analyzing the residuals.  We will then perform variable selection to end up with a model that contains only significant independent variables. Finally, we will perform cross validation to determine the efficacy of our model.  By constructing a model containing significant variables, we hope to determine which physiochemical variables are most important in determining the quality of a wine.
 
 # Introduction
-This is where the introduction will take place
+The "Vinho Verde" red wine dataset contains 12 variables and 1599 unique observations.  Due to privacy limitations, this data only contains the output variable quality and 11 physiochemical variables.  All of the physiochemical variables are of the numeric class, while the dependent variable quality is an integer.  
 
 # Data Description
 
