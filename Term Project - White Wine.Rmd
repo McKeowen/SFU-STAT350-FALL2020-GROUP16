@@ -17,6 +17,7 @@ library(MASS)
 library(olsrr)
 library(Metrics)
 library(caret)
+library(corrplot)
 ```
 
 # Data Description
@@ -482,7 +483,9 @@ white.mse.del
 ```
 <br />
 
-Deleting the potential outlier points has a lot of effect on the regression coefficients. In other words, points 2762 and 4746 had a huge impact on the slope and the intercept of the model. In fact, deleting the points increased the $R^2$ value from 0.2802 to 0.2862, although it is a slight increase. Also, the mean squared error of the model decreases as well. Hence, we conclude that points 2762 and 4746 are influential. We will use the deleted model from now on.
+Deleting the potential outlier points has a lot of effect on the regression coefficients. In other words, points 2762 and 4746 had a huge impact on the slope and the intercept of the model. In fact, deleting the points increased the $R^2$ value from 0.2802 to 0.2862, although it is a slight increase. Also, the mean squared error of the model decreases as well. Hence, we conclude that points 2762 and 4746 are influential.
+
+We will use the deleted model from now on.
 
 However, the improved model still has a low value of $R^2$. Based on the information we acquired from both the residuals vs. fitted values, we may say that the deficiency of the model is due to trying to fit a discrete quality value to a continuous data. 
 
@@ -490,7 +493,7 @@ However, the improved model still has a low value of $R^2$. Based on the informa
 
 > Outlier Diagnostics : Cook's Distance
 
-Cook's distance is one of the ways to measure a point's influence by considering both the location of a point in the x space and the response variable. Points with large values of $D_i$ can be interpreted as an influential point.
+Cook's distance is one of the ways to measure a point's influence by considering both the location of a point in the x space and the response variable. Points with large values of $D_i$ can be interpreted as an influential point. 
 
 ```{r}
 white.cooksd = cooks.distance(white.mdl.del)
@@ -527,6 +530,66 @@ Unfortunately, deleting the point increases the $R^2$ and the mean squared error
 As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
 
 <br />
+
+> Multicollinearity
+
+Before we move on to the transformation of data, we have to see if multicollinearity is still a problem for our model. We will use VIFs to diagnose such problem.
+
+```{r}
+vif(white.mdl.del)
+```
+<br />
+
+VIF for residual sugar, density, and alcohol are larger than 10 and therefore we have a problem. It seems like our new model has worsened the multicollinearity. We will fix this problem now.
+
+
+## Multicollinearity
+<br />
+
+> Model Respecification
+
+There are a couple of methods for dealing with multicollinearity. First one is collecting additional data and the second technique is model respecification. Since we cannot gather more data at the moment, we will try variable elimination, a specific type of model respecification.
+
+Let's investigate further and look at the pair-wise correlation among the regressors.
+
+```{r}
+cor.white = cor(white.wine.del[,-12])
+corrplot.mixed(cor.white, lower.col = 'black', number.cex = .7)
+```
+<br />
+
+The plot above tells us a few things.
+
+There is a high positive correlation between (from strongest to weakest):
+
+* residual sugar and total sulfur dioxide
+* free sulfur dioxide and total sulfur dioxide
+* total sulfur dioxide and density
+
+There is a high negative correlation between (from strongest to weakest):
+
+* density and alcohol
+* total sulfur dioxide and alcohol
+* fixed acidity and pH
+* residual sugar and density
+
+<br />
+
+> Respecification of The Regression Equation
+
+One approach we can take for model respecification is to redefine the regressors. We can find some interactive function that will reduce the multicollinearity problem we are having. We will conduct some analysis on the white wine data to see which variables are most likely to have a high interaction.
+
+```{r}
+
+```
+
+<br />
+
+> Variable Elimination
+
+Another widely used approach we can take. Eliminating one of the regressors with linear dependency may be helpful in solving multicollinearity. 
+
+
 
 ## Transformation
 <br />
