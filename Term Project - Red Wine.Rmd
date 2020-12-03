@@ -7,7 +7,18 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, include=FALSE}
+<br />
+
+# Abstract
+This exploratory data analysis will be examining data pertaining to the red variety of the Portugese "Vinho Verde" wine.   
+Our analysis will begin by graphically representing the data in order to learn more about it. By constructing visualizations, we will determine the types of relationships between the independent variables and the dependent variable quality. From there, we will be fitting the data to a linear model, and analyzing the residuals.  We will then perform variable selection to end up with a model that contains only significant independent variables. Finally, we will perform cross validation to determine the efficacy of our model.  By constructing a model containing significant variables, we hope to determine which physiochemical variables are most important in determining the quality of a wine.
+
+# Introduction
+The "Vinho Verde" red wine dataset contains 12 variables and 1599 unique observations. Due to privacy limitations, this data only contains the output variable quality and 11 physiochemical variables.  All of the physiochemical variables are of the numeric class, while the dependent variable quality is an integer.  
+
+Here are the libraries that we used in this project. 
+
+```{r, results='hide', warning = FALSE, message = FALSE}
 library(latexpdf)
 library(stringr)
 library(ggplot2)
@@ -18,20 +29,13 @@ library(olsrr)
 library(Metrics)
 library(caret)
 ```
-# Abstract
-This exploratory data analysis will be examining data pertaining to the red variety of the Portugese "Vinho Verde" wine.   
-Our analysis will begin by graphically representing the data in order to learn more about it.  By constructing visualizations, we can determine the types of relationships between the independent variables and the dependent variable quality.  From there, we will be fitting the data to a linear model, and analyzing the residuals.  We will then perform variable selection to end up with a model that contains only significant independent variables. Finally, we will perform cross validation to determine the efficacy of our model.  By constructing a model containing significant variables, we hope to determine which physiochemical variables are most important in determining the quality of a wine.
-
-# Introduction
-The "Vinho Verde" red wine dataset contains 12 variables and 1599 unique observations.  Due to privacy limitations, this data only contains the output variable quality and 11 physiochemical variables.  All of the physiochemical variables are of the numeric class, while the dependent variable quality is an integer.  
+<br />
 
 # Data Description
 
-<br />
+> About the Data
 
-> About the Data - Red Wine Quality
-
-First, we will read the red wine data and look at the fundamentals of the data. We will also generate a pairs plot and see the approximate relationship between the variables.
+First, we will read the red wine data and look at the fundamentals of the data. 
 
 ```{r, eval=TRUE}
 red.wine = read.csv("winequality-red.csv", header=TRUE, sep=";")
@@ -44,18 +48,6 @@ red.info = summary(red.wine)
 Include some basic descriptions including the class and the descriptive statistics of the variables. 
 
 <br />
-```{r, fig.width = 7, fig.height = 7}
-pairs(red.wine)
-```
-
-Include some basic description regarding the pairs plot.
-
-<br />
-
-
-<br />
-Include some basic descriptions including the class and the descriptive statistics of the variables. 
-
 
 > New Additional Data Point
 
@@ -71,15 +63,16 @@ red.datapoints[i] = red.med
 
 red.wine = rbind(red.wine, red.datapoints)
 ```
-
+<br />
 We now introduced the median point as a new point to the red wine quality data.
 
 <br />
 
-
 > Data Visualization - Histograms
 
-Now for the last step before going into fitting the model into a linear model, we will generate several histograms for the all the variables. This will help us see the approximate relationship between each varibles and wine quality.
+Data visualization is one of the simplest way to understand our dataset. Histograms or boxplots plot not only the shape of individual variables but also the relationship between them. After this process, we will be able to keep in mind the approximate distribution of each regressors.   
+
+First, we will generate histograms for the all the variables. This will tell us the approximate distribution of each variables.
 
 ```{r}
 hist_y = ggplot(aes(quality), data = red.wine) +
@@ -134,6 +127,7 @@ grid.arrange(hist_y, hist_x1, hist_x2, hist_x3, hist_x4, hist_x5, hist_x6, hist_
 ```
 <br />
 
+
 There are a couple of things that we can see from the histograms above.
 
 * Quality variable seem to have a normal distribution, with most of the values concentrated in categories 5, 6, and 7. In other words, there are much more normal wines than excellent or poor ones.
@@ -145,7 +139,7 @@ There are a couple of things that we can see from the histograms above.
 
 > Data Visualization - Regressors vs. Predictor
 
-Now for the last step before going into fitting the model into a linear model, we will plot each of the regressors against the predictor. This will help us see the approximate relationship between each varibles and wine quality.
+Now, we will plot each of the regressors against the predictor. This will help us see the approximate relationship between each varibles and wine quality.
 
 ```{r}
 group_x1 = ggplot(aes(fixed.acidity, quality), data = red.wine) + 
@@ -209,6 +203,7 @@ grid.arrange(group_x1, group_x2, group_x3, group_x4, group_x5, group_x6, group_x
 ```
 <br />
 
+
 There are a couple of things that we can see from the plots above.
 
 * Fixed acidity, citric acid, sulphates, and alcohol have a positive relationship with quality.
@@ -217,6 +212,10 @@ There are a couple of things that we can see from the plots above.
 
 <br />
 
+
+> Data Visualization - Boxplots 
+
+Now, we will generate boxplots of each variable and see more closely of the distribution of variables.
 
 ```{r}
 par(mfrow = c(1,4))
@@ -235,6 +234,7 @@ boxplot(red.wine$alcohol, col="slategray2", pch=19, xlab = "Alcohol")
 ```
 <br />
 
+
 There are a couple of things that we can see from the boxplots above.
 
 * Citric acid, free sulfur dioxide, total sulfur dioxide, and alcohol are right-skewed. The skewness of the data would not be fixed even after eliminating the outliers.
@@ -245,11 +245,9 @@ There are a couple of things that we can see from the boxplots above.
 
 
 # Methods
-
 <br />
 
 ## Multiple Linear Regression - Full Model
-<br />
 
 > Pairs Plot
 
@@ -260,6 +258,7 @@ pairs(red.wine)
 ```
 
 The pairs plot tells us a bit about the relationship between variables in the dataset. Specifically, we can see that a linear model seems appropriate, although some of the variables seem to have less of a linear relationship (we can look into that by conducting hypothesis tests). Also, we have to keep in mind of the multicollinearity present among the explanatory variables. Now, we will conduct a linear regression against the quality of the red wine.
+
 <br />
 
 > Fitting Into a Linear Model
@@ -268,6 +267,7 @@ The pairs plot tells us a bit about the relationship between variables in the da
 red.mdl = lm(quality~., data=red.wine)
 summary(red.mdl)
 ```
+<br />
 
 There are a couple of things that we notice from the summary of the linear model. 
 
@@ -277,21 +277,28 @@ There are a couple of things that we notice from the summary of the linear model
 * The adjusted R-squared value is 0.3561 (35.61%), which implies that our linear model fit to the data is not satisfactory. In fact, only 35% of the data can be explained by the model.
 * Looking at the individual P-values, fixed acidity, citric acid, residual sugar and density seem to be insignificant given that all the other variables are in the model. 
 
-In order to see if some of the regressors are insignificant to the regression, we will first run the anova test.
+<br />
+
 
 > Anova Test
+
+In order to see if some of the regressors are insignificant to the regression, we will first run the anova test.
 
 ```{r}
 anova(red.mdl)
 ```
-
+<br />
 The anova test conducts a partial F-test, and supports our hypothesis that citric acid and residual sugar variable seem to be insiginificant to the linear model given that the variables before them are already included in the model.
 
 To check which of the variables must be selected in building the model, we will conduct a variable selection later on.
 
+<br />
+
 > Hidden Extrapolation
 
-It is fairly easy to inadvertently extrapolate when doing multiple regression, so we will go through the formal procedure to look for hidden extrapolation. First, we will obtain the hat matrix to see if certain data points are within the regressor variable hull (RVH).
+It is fairly easy to inadvertently extrapolate when doing multiple regression, so we will go through the formal procedure to look for hidden extrapolation.
+
+First, we will obtain the hat matrix to see if certain data points are within the regressor variable hull (RVH).
 
 ```{r}
 X = cbind(c(1, nrow(red.wine)), red.wine$fixed.acidity, red.wine$volatile.acidity, red.wine$citric.acid, red.wine$residual.sugar, red.wine$chlorides, red.wine$free.sulfur.dioxide, red.wine$total.sulfur.dioxide, red.wine$density, red.wine$pH, red.wine$sulphates, red.wine$alcohol, red.wine$quality)
@@ -304,6 +311,7 @@ plot(hii)
 
 Using the identify() function, we can see that the 152, 259, and 481st indeces from the $h_{ii}$ matrix look a bit far away from other points. Hence, we will check if we are unknowingly extrapolating for these points.
 
+<br />
 ```{r}
 point1 = hii[152]
 point2 = hii[259]
@@ -311,8 +319,9 @@ point3 = hii[481]
 print(c(point1, point2, point3, Hmax))
 ```
 <br />
-
 Comparing the values to the $h_{max}$, all the values are inside the RVH. Hence, we conclude all data points fall under interpolation and is safe to make predictions at given our current model.
+
+<br />
 
 > Multicollinearity
 
@@ -322,21 +331,25 @@ In the pairs plot above, we suspected that there may be near linear relationship
 vif(red.mdl)
 ```
 <br />
-
 Although VIF for fixed acidity are large, but it is not larger than 10, the rule-of-thumb that our textbook suggests. In fact, none of the VIFs are larger than 10, so we will conclude that there are no serious issues regarding multicollinearity. 
 
-## Model Assessment
 <br />
+
+## Model Assessment
 
 > Residual Analysis
 
 We will first go over the graphic analysis of the residuals to check if the error are i.i.d. normally distributed, with zero mean and constant variance.
+
+<br />
+
 
 ##### Residual vs. Fitted
 
 ```{r}
 plot(red.mdl, which=1)
 ```
+
 <br />
 
 Comments on the residual vs. fitted plot
@@ -349,6 +362,7 @@ Comments on the residual vs. fitted plot
 ```{r}
 plot(red.mdl, which=2)
 ```
+
 <br />
 
 We observe that the residuals for our model meet the normality assumption. There seems to be a slight negative skew to the distribution of the residuals, although it is not too much of a concern. Also, there are some potential influential points. We will look at this in a moment. 
@@ -361,6 +375,7 @@ We observe that the residuals for our model meet the normality assumption. There
 ```{r}
 plot(red.mdl, which=3)
 ```
+
 <br />
 
 Comments on the Scale-Location Plot
@@ -373,6 +388,7 @@ Comments on the Scale-Location Plot
 ```{r}
 plot(red.mdl, which=5)
 ```
+
 <br />
 
 Comments on the Residuals vs. Leverage Plot
@@ -389,11 +405,13 @@ For the outlier detection, we are going to use externally studentized residuals 
 ti = rstudent(red.mdl)
 plot(red.mdl$fitted.values, ti)
 ```
-<br / >
 
-Comments on the residual vs. fitted values plot. 
+<br />
 
-Identifying the points on the plot, 653 and 833rd data are potential outliers. To investigate the influence of these points on the model, we will obtain an equation with these two observations deleted.
+Identifying the points on the plot, 653 and 833rd data are potential outliers. 
+To investigate the influence of these points on the model, we will obtain an equation with these two observations deleted.
+
+<br />
 
 ```{r}
 red.wine.del = red.wine[-c(653,833), ]
@@ -408,7 +426,6 @@ red.mse
 red.mse.del
 ```
 <br />
-
 Deleting the potential outlier points has almost no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a slight increase in $R^2$, even though the increase does not seem significant. Hence, we conclude that points 653 and 833 are not influential.
 
 Based on the information we acquired from both the residuals vs. fitted values, we may say that the deficiency of the model is due to trying to fit a discrete quality value to a continuous data. 
@@ -417,7 +434,9 @@ Based on the information we acquired from both the residuals vs. fitted values, 
 
 > Outlier Diagnostics : Cook's Distance
 
-Cook's distance is one of the ways to measure a point's influence by considering both the location of a point in the x space and the response variable. Points with large values of $D_i$ can be interpreted as an influential point.
+Cook's distance is one of the ways to measure a point's influence by considering both the location of a point in the x space and the response variable.
+
+Points with large values of $D_i$ can be interpreted as an influential point.
 
 ```{r}
 red.cooksd = cooks.distance(red.mdl)
@@ -437,6 +456,8 @@ When interpreting Cook's distance, we categorize the values as follows:
 
 Even though the maximum value for the Cook's distance is 0.06885, which is even smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look.
 
+<br />
+
 ```{r}
 red.wine.del2 = red.wine[-c(152,653,1236), ]
 red.mdl.del2 = lm(quality ~ . , data=red.wine.del2)
@@ -448,21 +469,17 @@ red.mse
 red.mse.del2
 ```
 <br />
-
-Unfortunately, deleting the point increases the $R^2$ and decreases the mean squared error value by just a little bit, which is not as desirable. Hence, we conclude that the points 152, 653, and 1236 are not influential.
+Deleting the point increases the $R^2$ and decreases the mean squared error value by just a little bit, which is not exactly what we want. Hence, we conclude that the points 152, 653, and 1236 are not influential.
 
 As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
 
 <br />
 
 ## Transformation
-<br />
 
 Previously, the summary of the full model has told us that our model is not doing a good job in fitting the data. And while analyzing the residuals, we realized the fact that fitting a discrete data into a continuous model may be causing such problem. 
 
 Before we go into transforamtion on ordinal variables, we will try some conventional transformations.
-
-<br />
 
 > Log Transformation
 
@@ -475,7 +492,6 @@ red.sum
 red.log.sum
 ```
 <br />
-
 By taking logarthims of quality values, estimates of each of the coefficients changed quite a lot. However, the log transformation decreased the $R^2$ value, which is not good.
 
 Since our goal was to improve the model to better fit the data, we will skip further analysis on the log transformation model and move on.
@@ -493,7 +509,6 @@ red.sum
 red.sqr.sum
 ```
 <br />
-
 By taking the square-root of quality values, estimates of each of the coefficients changed quite a lot. However, the square-root transformation decreased the $R^2$ value, which is not good.
 
 Since our goal was to improve the model to better fit the data, we will skip further analysis on the square-root transformation model and move on.
@@ -517,7 +532,6 @@ Still figuring out how to do this part ...
 <br />
 
 ## Variable Selection
-<br />
 
 As we saw in the beginning, some of the variables did not seem significant to our model. Since incorrect model specification can cause serious problems, we will try to find the most appropriate subset of regressors for our model. 
 
@@ -536,7 +550,6 @@ best.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + tot
 best.red.sum = summary(best.red)
 ```
 <br />
-
 Looking at the plots above, the increase in $R^2$ and Adjusted $R^2$ almost flattens by model 7. In fact, change in Mallow's $C_p$ statistic and AIC drastically decreases at model 7 as well. 
 
 Hence, best subset regression tells us that model 7, which has the following variables:
@@ -549,12 +562,14 @@ Hence, best subset regression tells us that model 7, which has the following var
 * sulphates
 * alcohol
 
-best meets our criterion, which perfectly aligns with our expectation we had when we saw the large P-values in the full model.
+They best meet our criterion, which perfectly aligns with our expectation we had when we saw the large P-values in the full model.
 
-#### Stepwise Regression Methods
 <br />
 
+#### Stepwise Regression Methods
+
 Since comparing all possible regressions and the best subsets take a lot of time and work, we will choose only a few models by adding or deleting regressors one at a time. Here, keep in mind that we used AIC values to compare each steps. 
+<br />
 
 > Forward Selection
 
@@ -570,7 +585,6 @@ forward.red= lm(quality ~ alcohol + volatile.acidity + sulphates +
 forward.red.sum = summary(forward.red)
 ```
 <br />
-
 Our final model has 7 of the 11 possible predictors (written in the order they were added):
 
 * alcohol
@@ -597,7 +611,6 @@ backward.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide +
 backward.red.sum = summary(backward.red)
 ```
 <br />
-
 Our final model has 7 of the 11 possible predictors (written in their order in the model):
 
 * volatile acidity
@@ -623,7 +636,6 @@ both.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide +
 both.red.sum = summary(both.red)
 ```
 <br />
-
 Our final model has 7 of the 11 possible predictors (written in their order in the model):
 
 * volatile acidity
@@ -638,7 +650,7 @@ As it turns out, the chosen 7 variables are identical for all our variable selec
 
 <br />
 
-Now, we will compare all our models by their adjusted $R^2$.
+Now, let's compare all our models by their adjusted $R^2$.
 
 ```{r}
 # Adjusted R-squared for the full model
@@ -662,31 +674,33 @@ both.red.rsq = both.red.sum$adj.r.squared
 both.red.rsq
 ```
 <br />
-
 Clearly, even after selecting the appropriate regressors, the adjusted $R^2$ did not improve. In other words, the subset models do not show much of a higher performance. In fact, as we saw above, all the variable selection models choose the same 7 variables and even generates equal adjusted $R^2$ values.
 
 Hence, from now on, the best model used will be 
 
-quality = $\beta_0$ + $\beta_1$ * volatile acidity + $\beta_2$ * chlorides + $\beta_3$ * free sulfur dioxide + $\beta_4$ * total sulfur dioxide + $\beta_5$ * pH + $\beta_6$ * sulphates + $\beta_7$ * alcohol. 
+Quality = $\beta_0$ + $\beta_1$ * volatile acidity + $\beta_2$ * chlorides + $\beta_3$ * free sulfur dioxide + $\beta_4$ * total sulfur dioxide + $\beta_5$ * pH + $\beta_6$ * sulphates + $\beta_7$ * alcohol. 
 
 However, although these are all the variable selection method we learned, we should always keep in mind that there will be several equally good models. That is, we might be ignorant of the background knowledge of the collected data, i.e. there may be a whole other variable that affects wine quality.
 
 With that in mind, we will assess our final model by investigating the residual plots.
+
 <br />
 
 #### Residual Analysis
-<br />
 
 ```{r}
 fin.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
     total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
 ```
 
+<br />
+
 ##### Residual vs. Fitted
 
 ```{r}
 plot(fin.red, which=1)
 ```
+
 <br />
 
 Comments on the residual vs. fitted plot
@@ -699,6 +713,7 @@ Comments on the residual vs. fitted plot
 ```{r}
 plot(fin.red, which=2)
 ```
+
 <br />
 
 We observe that the residuals for our model meet the normality assumption. The negative skew that we saw in the full model has reduced, which is a good thing.
@@ -711,6 +726,7 @@ We observe that the residuals for our model meet the normality assumption. The n
 ```{r}
 plot(fin.red, which=3)
 ```
+
 <br />
 
 Comments on the Scale-Location Plot
@@ -723,6 +739,7 @@ Comments on the Scale-Location Plot
 ```{r}
 plot(fin.red, which=5)
 ```
+
 <br />
 
 Comments on the Residuals vs. Leverage Plot
@@ -730,7 +747,6 @@ Comments on the Residuals vs. Leverage Plot
 <br />
 
 ## Model Validation
-<br />
 
 Before we jump to any conclusions, we should check the validity of our model. There is a good chance that this data was made so that one can predict the quality of a wine based on specific chemical attributes. 
 
