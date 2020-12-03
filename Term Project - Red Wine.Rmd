@@ -51,7 +51,7 @@ Include some basic descriptions including the class and the descriptive statisti
 
 > New Additional Data Point
 
-Before we begin the data analysis, we will introduce the median point as a new additional data point to the white wine data.
+Before we begin the data analysis, we will introduce the median point as a new additional data point to the red wine data.
 
 ```{r}
 red.datapoints = vector(mode = 'numeric', length = 12)
@@ -238,7 +238,7 @@ boxplot(red.wine$alcohol, col="slategray2", pch=19, xlab = "Alcohol")
 There are a couple of things that we can see from the boxplots above.
 
 * Citric acid, free sulfur dioxide, total sulfur dioxide, and alcohol are right-skewed. The skewness of the data would not be fixed even after eliminating the outliers.
-* For other variables, detecting the outliers and fixing them will make the distribution more symmetric. However, the some of the outliers seem very far away from the data.
+* For other variables, detecting the outliers and fixing them will make the distribution more symmetric. However, some of the outliers seem very far away from the data.
 * Except for density, most of the outliers are on the larger side of the data.
 
 <br />
@@ -568,7 +568,8 @@ They best meet our criterion, which perfectly aligns with our expectation we had
 
 #### Stepwise Regression Methods
 
-Since comparing all possible regressions and the best subsets take a lot of time and work, we will choose only a few models by adding or deleting regressors one at a time. Here, keep in mind that we used AIC values to compare each steps. 
+Since comparing all possible regressions and the best subsets take a lot of time and work, we will choose only a few models by adding or deleting regressors one at a time. Here, keep in mind that we used AIC values to compare each steps.
+
 <br />
 
 > Forward Selection
