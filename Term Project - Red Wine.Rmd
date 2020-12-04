@@ -43,9 +43,11 @@ names(red.wine)
 dim(red.wine)
 sapply(red.wine, class)
 red.info = summary(red.wine)
+table(is.na(red.wine))
 ```
 <br />
 Include some basic descriptions including the class and the descriptive statistics of the variables. 
++ Missing value
 
 <br />
 
@@ -254,7 +256,7 @@ There are a couple of things that we can see from the boxplots above.
 First, with red wine, conduct a pairs plot to see if there are any particular patterns.
 
 ```{r}
-pairs(red.wine)
+pairs(red.wine, main = "Pairs Plot of Red Wine")
 ```
 
 The pairs plot tells us a bit about the relationship between variables in the dataset. Specifically, we can see that a linear model seems appropriate, although some of the variables seem to have less of a linear relationship (we can look into that by conducting hypothesis tests). Also, we have to keep in mind of the multicollinearity present among the explanatory variables. Now, we will conduct a linear regression against the quality of the red wine.
@@ -305,7 +307,7 @@ X = cbind(c(1, nrow(red.wine)), red.wine$fixed.acidity, red.wine$volatile.acidit
 H = X %*% solve(t(X) %*% X) %*% t(X)
 hii = diag(H)
 Hmax = max(diag(H))
-plot(hii)
+plot(hii, main = "H_ii Values for Red Wine")
 ```
 <br />
 
@@ -403,7 +405,8 @@ For the outlier detection, we are going to use externally studentized residuals 
 
 ```{r}
 ti = rstudent(red.mdl)
-plot(red.mdl$fitted.values, ti)
+plot(red.mdl$fitted.values, ti, xlab = "Fitted Values", ylab="Externally Studentized Residuals",
+     main="Studentized Residuals vs. Fitted Values")
 ```
 
 <br />
@@ -442,7 +445,7 @@ Points with large values of $D_i$ can be interpreted as an influential point.
 red.cooksd = cooks.distance(red.mdl)
 max.di = max(red.cooksd)
 max.di
-plot(red.cooksd, pch="*", cex=2, main="Influential Observations by Cook's Distance") 
+plot(red.cooksd, pch="*", cex=2, ylab = "Cook's Distance", main="Influential Observations by Cook's Distance") 
 abline(h = 10*mean(red.cooksd, na.rm=T), col="red")  # adding the cutoff line
 text(x=1:length(red.cooksd)+1, y=red.cooksd, labels=ifelse(red.cooksd>10*mean(red.cooksd, na.rm=T),names(red.cooksd),""), col="red")
 ```
@@ -851,6 +854,8 @@ for(i in 1:5){
 Both the numerical and graphical observations do not have a lot of difference from our full model.
 
 Hence we conclude that both our models have no prediction powers.
+
+#Conclusion
 
 Because the dataset only contains physiochemical variables assosciated with the wine, we do not have the full picture.  Additional variables could help us paint a better picture of how the quality of the wine is affected.
 
