@@ -10,11 +10,31 @@ knitr::opts_chunk$set(echo = TRUE)
 <br />
 
 # Abstract
-This exploratory data analysis will be examining data pertaining to the red variety of the Portugese "Vinho Verde" wine.   
+This exploratory data analysis will be examining data pertaining to the red variety of the Portugese "Vinho Verde" wine.
 Our analysis will begin by graphically representing the data in order to learn more about it. By constructing visualizations, we will determine the types of relationships between the independent variables and the dependent variable quality. From there, we will be fitting the data to a linear model, and analyzing the residuals.  We will then perform variable selection to end up with a model that contains only significant independent variables. Finally, we will perform cross validation to determine the efficacy of our model.  By constructing a model containing significant variables, we hope to determine which physiochemical variables are most important in determining the quality of a wine.
 
 # Introduction
-The "Vinho Verde" red wine dataset contains 12 variables and 1599 unique observations. Due to privacy limitations, this data only contains the output variable quality and 11 physiochemical variables.  All of the physiochemical variables are of the numeric class, while the dependent variable quality is an integer.  
+The "Vinho Verde" red wine dataset contains 12 variables and 1599 unique observations. Due to privacy limitations, this data only contains the output variable quality and 11 physiochemical variables.  All of the physiochemical variables are of the numeric class, while the dependent variable quality is an integer.
+
+<br />
+
+> About the Variables
+
+* Fixed acidity: Fixed or nonvolatile acids involved with wine
+* Volatile acidity: Amount of acetic acid in wine - large amounts may give wine a vinegary taste
+* Citric acid: Acid that adds freshness and flavor to wines, normally found in small quantities
+* Residual sugar: Amount of sugar remaining after fermentation stops
+* Chlorides: Amount of salt in the wine
+* Free sulfur dioxide: Free form of sulfur dioxide that prevents microbial growth and the oxidation of wine
+* Total sulfur dioxide: Amount of free and bound forms of sulfur dioxide
+* Density: Density of water depending on the percent alcohol and sugar content 
+* pH: Acidity of a wine on a scale from 0 to 14 - most wines are between 3 or 4
+* Sulphates: Wine additive that acts as an antimicrobial and antioxidant
+* Alcohol: Percent alcohol content of wine
+
+<br />
+
+> Libraries
 
 Here are the libraries that we used in this project. 
 
@@ -855,7 +875,9 @@ Both the numerical and graphical observations do not have a lot of difference fr
 
 Hence we conclude that both our models have no prediction powers.
 
-#Conclusion
+<br />
+
+# Conclusion
 
 Because the dataset only contains physiochemical variables assosciated with the wine, we do not have the full picture.  Additional variables could help us paint a better picture of how the quality of the wine is affected.
 
@@ -865,6 +887,13 @@ What was the length of fermentation?  What was the average temperature during th
 
 All of this additional information could help us to understand better the resulting effect on the quality of wine.  As shown from our analysis, we unfortunately can't come up with a model that accurately predicts the quality of wine given only the variables provided.
 
+# References
+
+Here are the works cited.
+
+Montgomery, D. C., Peck, E. A., & Vining, G. G. (2012). *Introduction to Linear Regression Analysis - 5th ed.* Hoboken, New Jersey: John Wiley & Sons, Inc.
+
+P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. *Modeling wine preferences by data mining from physicochemical properties.* In Decision Support Systems, Elsevier, 47(4):547-553, 2009.
 
 
 

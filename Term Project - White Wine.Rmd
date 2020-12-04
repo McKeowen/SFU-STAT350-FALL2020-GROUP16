@@ -913,6 +913,21 @@ Both the numerical and graphical observations do not have a lot of difference fr
 
 Hence we conclude that both our models have no prediction powers.
 
+<br />
+
+# Conclusion
+
+This is where conclusion will take place.
+
+<br />
+
+# References
+
+Here are the works cited.
+
+Montgomery, D. C., Peck, E. A., & Vining, G. G. (2012). *Introduction to Linear Regression Analysis - 5th ed.* Hoboken, New Jersey: John Wiley & Sons, Inc.
+
+P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. *Modeling wine preferences by data mining from physicochemical properties.* In Decision Support Systems, Elsevier, 47(4):547-553, 2009.
 
 
 
