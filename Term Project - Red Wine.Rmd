@@ -852,7 +852,13 @@ Both the numerical and graphical observations do not have a lot of difference fr
 
 Hence we conclude that both our models have no prediction powers.
 
+Because the dataset only contains physiochemical variables assosciated with the wine, we do not have the full picture.  Additional variables could help us paint a better picture of how the quality of the wine is affected.
 
+For example, take the grape.  What is the type of grape?  What region is it from?  What is the quality or pH of the soil it was grown in?  How does the quality of grape compare to past harvests?
+
+What was the length of fermentation?  What was the average temperature during the fermentation process?  What was the size of the batch?
+
+All of this additional information could help us to understand better the resulting effect on the quality of wine.  As shown from our analysis, we unfortunately can't come up with a model that accurately predicts the quality of wine given only the variables provided.
 
 
 
