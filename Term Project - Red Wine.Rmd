@@ -265,6 +265,35 @@ There are a couple of things that we can see from the boxplots above.
 
 <br />
 
+> Correlation
+
+Let's investigate the pair-wise correlation among the regressors.
+
+```{r}
+cor.red = cor(red.wine[,-12])
+corrplot.mixed(cor.red, lower.col = 'black', number.cex = .7)
+```
+<br />
+
+The plot above tells us a few things.
+
+There is a high positive correlation between :
+
+* fixed acidity and volatile acidity
+* fixed acidity and density
+* free sulfur dioxide and total sulfur dioxide
+
+There is a high negative correlation between (from strongest to weakest):
+
+* fixed acidity and pH
+* volatile acidity and citric acid
+* citric acid and density
+* density and alcohol
+
+Keeping in mind that there exists correlation between several variables, let's begin our multiple linear regression.
+
+<br />
+
 
 # Methods
 <br />

@@ -234,6 +234,36 @@ There are a couple of things that we can see from the boxplots above.
 <br />
 
 
+> Correlation
+
+Let's investigate the pair-wise correlation among the regressors.
+
+```{r}
+cor.white = cor(white.wine.del[,-12])
+corrplot.mixed(cor.white, lower.col = 'black', number.cex = .7)
+```
+<br />
+
+The plot above tells us a few things.
+
+There is a high positive correlation between (from strongest to weakest):
+
+* residual sugar and total sulfur dioxide
+* free sulfur dioxide and total sulfur dioxide
+* total sulfur dioxide and density
+
+There is a high negative correlation between (from strongest to weakest):
+
+* density and alcohol
+* total sulfur dioxide and alcohol
+* fixed acidity and pH
+* residual sugar and density
+
+Keeping in mind that there exists correlation between several variables, let's begin our multiple linear regression.
+
+<br />
+
+
 # Methods
 <br />
 
@@ -483,48 +513,44 @@ VIF for residual sugar, density, and alcohol are larger than 10 and therefore we
 
 ## Multicollinearity
 
-> Model Respecification
-
-There are a couple of methods for dealing with multicollinearity. First one is collecting additional data and the second technique is model respecification. Since we cannot gather more data at the moment, we will try variable elimination, a specific type of model respecification.
-
-Let's investigate further and look at the pair-wise correlation among the regressors.
-
-```{r}
-cor.white = cor(white.wine.del[,-12])
-corrplot.mixed(cor.white, lower.col = 'black', number.cex = .7)
-```
-<br />
-
-The plot above tells us a few things.
-
-There is a high positive correlation between (from strongest to weakest):
-
-* residual sugar and total sulfur dioxide
-* free sulfur dioxide and total sulfur dioxide
-* total sulfur dioxide and density
-
-There is a high negative correlation between (from strongest to weakest):
-
-* density and alcohol
-* total sulfur dioxide and alcohol
-* fixed acidity and pH
-* residual sugar and density
-
-<br />
-
 > Respecification of The Regression Equation
 
-One approach we can take for model respecification is to redefine the regressors. We can find some interactive function that will reduce the multicollinearity problem we are having. We will conduct some analysis on the white wine data to see which variables are most likely to have a high interaction.
+There are a couple of methods for dealing with multicollinearity.
+
+One approach we can take for model respecification is to redefine the regressors. The advantage of such process is that it may lower the VIF values, while keeping the interpretation of coefficients intact.
 
 ```{r}
-
+fixed.cen = (white.wine.del$fixed.acidity - mean(white.wine.del$fixed.acidity))
+vol.cen = (white.wine.del$volatile.acidity - mean(white.wine.del$volatile.acidity))
+citric.cen = (white.wine.del$citric.acid - mean(white.wine.del$citric.acid))
+resid.cen = (white.wine.del$residual.sugar - mean(white.wine.del$residual.sugar))
+chlor.cen = (white.wine.del$chlorides - mean(white.wine.del$chlorides))
+free.cen = (white.wine.del$free.sulfur.dioxide - mean(white.wine.del$free.sulfur.dioxide))
+tot.cen = (white.wine.del$total.sulfur.dioxide - mean(white.wine.del$total.sulfur.dioxide))
+dens.cen = (white.wine.del$density - mean(white.wine.del$density))
+ph.cen = (white.wine.del$pH - mean(white.wine.del$pH))
+sul.cen = (white.wine.del$sulphates - mean(white.wine.del$sulphates))
+alc.cen = (white.wine.del$alcohol - mean(white.wine.del$alcohol))
+white.cen.mdl = lm(quality ~ fixed.cen + vol.cen + citric.cen + resid.cen + chlor.cen + free.cen + tot.cen + dens.cen + ph.cen + sul.cen + alc.cen, data=white.wine.del)
+vif(white.cen.mdl)
 ```
+<br />
+Unfortunately, centering the variables did not reduce the VIFs for our model. Residual sugar, density, and alcohol still has a high VIF. 
+
+Next, we will try deleting the density variable from our model, since it is the one with the largest VIF.
 
 <br />
 
 > Variable Elimination
 
 Another widely used approach we can take. Eliminating one of the regressors with linear dependency may be helpful in solving multicollinearity. 
+
+```{r}
+white.den.del = lm(quality ~ .-density, data=white.wine.del)
+vif(white.den.del)
+```
+<br />
+By deleting the density variable, we successfully reduced all the VIFs to below 10.
 
 <br />
 
