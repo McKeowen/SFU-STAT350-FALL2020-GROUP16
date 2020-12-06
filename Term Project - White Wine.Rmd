@@ -48,19 +48,22 @@ Before we begin the data analysis, we will introduce the median point as a new a
 
 ```{r}
 white.datapoints = vector(mode = 'numeric', length = 12)
-fixed.cen = (white.wine$fixed.acidity - mean(white.wine$fixed.acidity))
-vol.cen = (white.wine$volatile.acidity - mean(white.wine$volatile.acidity))
-citric.cen = (white.wine$citric.acid - mean(white.wine$citric.acid))
-resid.cen = (white.wine$residual.sugar - mean(white.wine$residual.sugar))
-chlor.cen = (white.wine$chlorides - mean(white.wine$chlorides))
-free.cen = (white.wine$free.sulfur.dioxide - mean(white.wine$free.sulfur.dioxide))
-tot.cen = (white.wine$total.sulfur.dioxide - mean(white.wine$total.sulfur.dioxide))
-dens.cen = (white.wine$density - mean(white.wine$density))
-ph.cen = (white.wine$pH - mean(white.wine$pH))
-sul.cen = (white.wine$sulphates - mean(white.wine$sulphates))
-alc.cen = (white.wine$alcohol - mean(white.wine$alcohol))
-white.datapoints = c(6, fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen)
+fixed.cen = (14.2 - mean(white.wine$fixed.acidity))
+vol.cen = (1.1 - mean(white.wine$volatile.acidity))
+citric.cen = (1.6 - mean(white.wine$citric.acid))
+resid.cen = (65.8 - mean(white.wine$residual.sugar))
+chlor.cen = (0.346 - mean(white.wine$chlorides))
+free.cen = (289 - mean(white.wine$free.sulfur.dioxide))
+tot.cen = (440 - mean(white.wine$total.sulfur.dioxide))
+dens.cen = (1.04 - mean(white.wine$density))
+ph.cen = (3.82 - mean(white.wine$pH))
+sul.cen = (1.08 - mean(white.wine$sulphates))
+alc.cen = (14.2 - mean(white.wine$alcohol))
+white.datapoints = c(fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen, 6)
+white.datapoints
 white.wine = rbind(white.wine, white.datapoints)
+summary(white.wine)
+dim(white.wine)
 ```
 <br />
 We now introduced the median point as a new point to the white wine quality data.
