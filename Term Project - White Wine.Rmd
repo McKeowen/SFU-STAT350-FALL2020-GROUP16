@@ -59,7 +59,7 @@ dens.cen = (white.wine$density - mean(white.wine$density))
 ph.cen = (white.wine$pH - mean(white.wine$pH))
 sul.cen = (white.wine$sulphates - mean(white.wine$sulphates))
 alc.cen = (white.wine$alcohol - mean(white.wine$alcohol))
-white.datapoints = c(fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen)
+white.datapoints = c(6, fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen)
 white.wine = rbind(white.wine, white.datapoints)
 ```
 <br />
