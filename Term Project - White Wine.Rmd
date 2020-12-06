@@ -33,6 +33,7 @@ names(white.wine)
 dim(white.wine)
 sapply(white.wine, class)
 white.info = summary(white.wine)
+white.info
 table(is.na(red.wine))
 ```
 <br />
@@ -47,12 +48,18 @@ Before we begin the data analysis, we will introduce the median point as a new a
 
 ```{r}
 white.datapoints = vector(mode = 'numeric', length = 12)
-
-for (i in 1:12) {
-white.med = as.numeric(str_extract(white.info[3,i], "\\d+\\.*\\d*")) #extracts value from summary
-white.datapoints[i] = white.med
-}
-
+fixed.cen = (white.wine$fixed.acidity - mean(white.wine$fixed.acidity))
+vol.cen = (white.wine$volatile.acidity - mean(white.wine$volatile.acidity))
+citric.cen = (white.wine$citric.acid - mean(white.wine$citric.acid))
+resid.cen = (white.wine$residual.sugar - mean(white.wine$residual.sugar))
+chlor.cen = (white.wine$chlorides - mean(white.wine$chlorides))
+free.cen = (white.wine$free.sulfur.dioxide - mean(white.wine$free.sulfur.dioxide))
+tot.cen = (white.wine$total.sulfur.dioxide - mean(white.wine$total.sulfur.dioxide))
+dens.cen = (white.wine$density - mean(white.wine$density))
+ph.cen = (white.wine$pH - mean(white.wine$pH))
+sul.cen = (white.wine$sulphates - mean(white.wine$sulphates))
+alc.cen = (white.wine$alcohol - mean(white.wine$alcohol))
+white.datapoints = c(fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen)
 white.wine = rbind(white.wine, white.datapoints)
 ```
 <br />
@@ -66,54 +73,54 @@ First, we will generate histograms for the all the variables. This will tell us 
 
 ```{r}
 white.hist_y = ggplot(aes(quality), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 1) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 1) +
   ggtitle('Histogram of Quality') + theme(plot.title = element_text(size=9))
 
 white.hist_x1 = ggplot(aes(fixed.acidity), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.5) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.5) +
   ggtitle('Histogram of Fixed Acidity') + theme(plot.title = element_text(size=8))
 
 white.hist_x2 = ggplot(aes(volatile.acidity), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.1) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.1) +
   ggtitle('Histogram of Volatile Acidity') + theme(plot.title = element_text(size=7.5))
 
 white.hist_x3 = ggplot(aes(citric.acid), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.1) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.1) +
   ggtitle('Histogram of Citric Acid') + theme(plot.title = element_text(size=8))
 
 white.hist_x4 = ggplot(aes(residual.sugar), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 5) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 5) +
   ggtitle('Histogram of Residual Sugar') + theme(plot.title = element_text(size=6.7))
 
 white.hist_x5 = ggplot(aes(chlorides), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.05) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.05) +
   ggtitle('Histogram of Chlorides') + theme(plot.title = element_text(size=8.5))
 
 white.hist_x6 = ggplot(aes(free.sulfur.dioxide), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 10) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 10.4) +
   ggtitle('Histogram of Free Sulfur Dioxide') + theme(plot.title = element_text(size=6))
 
 white.hist_x7 = ggplot(aes(total.sulfur.dioxide), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 16) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 16) +
   ggtitle('Histogram of Total Sulfur Dioxide') + theme(plot.title = element_text(size=6))
 
 white.hist_x8 = ggplot(aes(density), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.004) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.004) +
   ggtitle('Histogram of Density') + theme(plot.title = element_text(size=9))
 
 white.hist_x9 = ggplot(aes(pH), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.08) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.08) +
   ggtitle('Histogram of pH') + theme(plot.title = element_text(size=9))
 
 white.hist_x10 = ggplot(aes(sulphates), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.1) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.1) +
   ggtitle('Histogram of Sulphates') + theme(plot.title = element_text(size=8))
 
 white.hist_x11 = ggplot(aes(alcohol), data = white.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.3) +
+  geom_histogram(aes(color=I('black'), fill=I('beige')), binwidth = 0.3) +
   ggtitle('Histogram of Alcohol') + theme(plot.title = element_text(size=9))
 
-grid.arrange(white.hist_y, white.hist_x1, white.hist_x2, white.hist_x3, white.hist_x4, white.hist_x5, white.hist_x6, white.hist_x7, white.hist_x8, white.hist_x9, white.hist_x10, white.hist_x11, ncol = 4)
+grid.arrange(white.hist_y, white.hist_x1, white.hist_x2, white.hist_x3, white.hist_x4, white.hist_x5, white.hist_x6, white.hist_x7, white.hist_x8, white.hist_x9, white.hist_x10, white.hist_x11, ncol = 4, top="Histograms for White Wine Data")
 ```
 <br />
 
@@ -496,61 +503,6 @@ white.mse.del2
 Deleting the point increases the $R^2$ and the mean squared error value by just a little bit, which is not as desirable. Hence, we conclude that the point 3308 is not influential.
 
 As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
-
-<br />
-
-> Multicollinearity
-
-Before we move on to the transformation of data, we have to see if multicollinearity is still a problem for our model. We will use VIFs to diagnose such problem.
-
-```{r}
-vif(white.mdl.del)
-```
-<br />
-VIF for residual sugar, density, and alcohol are larger than 10 and therefore we have a problem. It seems like our new model has worsened the multicollinearity. We will fix this problem now.
-
-<br />
-
-## Multicollinearity
-
-> Respecification of The Regression Equation
-
-There are a couple of methods for dealing with multicollinearity.
-
-One approach we can take for model respecification is to redefine the regressors. The advantage of such process is that it may lower the VIF values, while keeping the interpretation of coefficients intact.
-
-```{r}
-fixed.cen = (white.wine.del$fixed.acidity - mean(white.wine.del$fixed.acidity))
-vol.cen = (white.wine.del$volatile.acidity - mean(white.wine.del$volatile.acidity))
-citric.cen = (white.wine.del$citric.acid - mean(white.wine.del$citric.acid))
-resid.cen = (white.wine.del$residual.sugar - mean(white.wine.del$residual.sugar))
-chlor.cen = (white.wine.del$chlorides - mean(white.wine.del$chlorides))
-free.cen = (white.wine.del$free.sulfur.dioxide - mean(white.wine.del$free.sulfur.dioxide))
-tot.cen = (white.wine.del$total.sulfur.dioxide - mean(white.wine.del$total.sulfur.dioxide))
-dens.cen = (white.wine.del$density - mean(white.wine.del$density))
-ph.cen = (white.wine.del$pH - mean(white.wine.del$pH))
-sul.cen = (white.wine.del$sulphates - mean(white.wine.del$sulphates))
-alc.cen = (white.wine.del$alcohol - mean(white.wine.del$alcohol))
-white.cen.mdl = lm(quality ~ fixed.cen + vol.cen + citric.cen + resid.cen + chlor.cen + free.cen + tot.cen + dens.cen + ph.cen + sul.cen + alc.cen, data=white.wine.del)
-vif(white.cen.mdl)
-```
-<br />
-Unfortunately, centering the variables did not reduce the VIFs for our model. Residual sugar, density, and alcohol still has a high VIF. 
-
-Next, we will try deleting the density variable from our model, since it is the one with the largest VIF.
-
-<br />
-
-> Variable Elimination
-
-Another widely used approach we can take. Eliminating one of the regressors with linear dependency may be helpful in solving multicollinearity. 
-
-```{r}
-white.den.del = lm(quality ~ .-density, data=white.wine.del)
-vif(white.den.del)
-```
-<br />
-By deleting the density variable, we successfully reduced all the VIFs to below 10.
 
 <br />
 
