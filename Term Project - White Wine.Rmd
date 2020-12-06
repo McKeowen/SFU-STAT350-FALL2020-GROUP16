@@ -445,7 +445,7 @@ Points with large values of $D_i$ can be interpreted as an influential point.
 
 ```{r}
 
-white.cooksd = cooks.distance(white.mdl)
+white.cooksd = cooks.distance(white.mdl.del)
 white.max.di = max(white.cooksd)
 white.max.di
 
