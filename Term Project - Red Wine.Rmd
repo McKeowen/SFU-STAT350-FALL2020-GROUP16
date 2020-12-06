@@ -81,6 +81,7 @@ Before we begin the data analysis, we will introduce the median point as a new a
 red.datapoints = vector(mode = 'numeric', length = 12)
 red.datapoints = c(2.60, 0, 0, 0.3, 0.001, 0, 3, 0.75, 0.740, 0.11, 6.40, 1)
 red.wine = rbind(red.wine, red.datapoints)
+summary(red.wine)
 ```
 <br />
 We now introduced the median point as a new point to the red wine quality data.
@@ -340,35 +341,6 @@ anova(red.mdl)
 The anova test conducts a partial F-test, and supports our hypothesis that citric acid and residual sugar variable seem to be insiginificant to the linear model given that the variables before them are already included in the model.
 
 To check which of the variables must be selected in building the model, we will conduct a variable selection later on.
-
-<br />
-
-> Hidden Extrapolation
-
-It is fairly easy to inadvertently extrapolate when doing multiple regression, so we will go through the formal procedure to look for hidden extrapolation.
-
-First, we will obtain the hat matrix to see if certain data points are within the regressor variable hull (RVH).
-
-```{r}
-X = cbind(c(1, nrow(red.wine)), red.wine$fixed.acidity, red.wine$volatile.acidity, red.wine$citric.acid, red.wine$residual.sugar, red.wine$chlorides, red.wine$free.sulfur.dioxide, red.wine$total.sulfur.dioxide, red.wine$density, red.wine$pH, red.wine$sulphates, red.wine$alcohol, red.wine$quality)
-H = X %*% solve(t(X) %*% X) %*% t(X)
-hii = diag(H)
-Hmax = max(diag(H))
-plot(hii, main = "H_ii Values for Red Wine")
-```
-<br />
-
-Using the identify() function, we can see that the 152, 259, and 481st indeces from the $h_{ii}$ matrix look a bit far away from other points. Hence, we will check if we are unknowingly extrapolating for these points.
-
-<br />
-```{r}
-point1 = hii[152]
-point2 = hii[259]
-point3 = hii[481]
-print(c(point1, point2, point3, Hmax))
-```
-<br />
-Comparing the values to the $h_{max}$, all the values are inside the RVH. Hence, we conclude all data points fall under interpolation and is safe to make predictions at given our current model.
 
 <br />
 
