@@ -59,10 +59,12 @@ First, we will read the red wine data and look at the fundamentals of the data.
 
 ```{r, eval=TRUE}
 red.wine = read.csv("winequality-red.csv", header=TRUE, sep=";")
+head(red.wine)
 names(red.wine)
 dim(red.wine)
 sapply(red.wine, class)
 red.info = summary(red.wine)
+red.info
 table(is.na(red.wine))
 ```
 <br />
@@ -77,12 +79,7 @@ Before we begin the data analysis, we will introduce the median point as a new a
 
 ```{r}
 red.datapoints = vector(mode = 'numeric', length = 12)
-
-for (i in 1:12) {
-red.med = as.numeric(str_extract(red.info[3,i], "\\d+\\.*\\d*")) #extracts value from summary
-red.datapoints[i] = red.med
-}
-
+red.datapoints = c(2.60, 0, 0, 0.3, 0.001, 0, 3, 0.75, 0.740, 0.11, 6.40, 1)
 red.wine = rbind(red.wine, red.datapoints)
 ```
 <br />
@@ -102,11 +99,11 @@ hist_y = ggplot(aes(quality), data = red.wine) +
   ggtitle('Histogram of Quality') + theme(plot.title = element_text(size=9))
 
 hist_x1 = ggplot(aes(fixed.acidity), data = red.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.2) +
+  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.6) +
   ggtitle('Histogram of Fixed Acidity') + theme(plot.title = element_text(size=8))
 
 hist_x2 = ggplot(aes(volatile.acidity), data = red.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.02) +
+  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.08) +
   ggtitle('Histogram of Volatile Acidity') + theme(plot.title = element_text(size=7.5))
 
 hist_x3 = ggplot(aes(citric.acid), data = red.wine) +
@@ -126,15 +123,15 @@ hist_x6 = ggplot(aes(free.sulfur.dioxide), data = red.wine) +
   ggtitle('Histogram of Free Sulfur Dioxide') + theme(plot.title = element_text(size=6))
 
 hist_x7 = ggplot(aes(total.sulfur.dioxide), data = red.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 8) +
+  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 8.3) +
   ggtitle('Histogram of Total Sulfur Dioxide') + theme(plot.title = element_text(size=6))
 
 hist_x8 = ggplot(aes(density), data = red.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.0005) +
+  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.004) +
   ggtitle('Histogram of Density') + theme(plot.title = element_text(size=9))
 
 hist_x9 = ggplot(aes(pH), data = red.wine) +
-  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.02) +
+  geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.09) +
   ggtitle('Histogram of pH') + theme(plot.title = element_text(size=9))
 
 hist_x10 = ggplot(aes(sulphates), data = red.wine) +
@@ -145,7 +142,8 @@ hist_x11 = ggplot(aes(alcohol), data = red.wine) +
   geom_histogram(aes(color=I('black'), fill=I('firebrick')), binwidth = 0.3) +
   ggtitle('Histogram of Alcohol') + theme(plot.title = element_text(size=9))
 
-grid.arrange(hist_y, hist_x1, hist_x2, hist_x3, hist_x4, hist_x5, hist_x6, hist_x7, hist_x8, hist_x9, hist_x10, hist_x11, ncol = 4)
+grid.arrange(hist_y, hist_x1, hist_x2, hist_x3, hist_x4, hist_x5, hist_x6, hist_x7, hist_x8, hist_x9, hist_x10, hist_x11, ncol = 4, top="Histograms for Red Wine Data")
+
 ```
 <br />
 
