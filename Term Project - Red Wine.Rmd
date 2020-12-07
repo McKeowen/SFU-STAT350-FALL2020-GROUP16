@@ -466,7 +466,7 @@ Cook's distance is one of the ways to measure a point's influence by considering
 Points with large values of $D_i$ can be interpreted as an influential point.
 
 ```{r}
-red.cooksd = cooks.distance(red.mdl)
+red.cooksd = cooks.distance(red.mdl.del)
 max.di = max(red.cooksd)
 max.di
 plot(red.cooksd, pch="*", cex=2, ylab = "Cook's Distance", main="Influential Observations by Cook's Distance for Red Wine") 
