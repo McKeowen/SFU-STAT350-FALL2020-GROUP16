@@ -441,16 +441,16 @@ To investigate the influence of these points on the model, we will obtain an equ
 <br />
 
 ```{r}
-red.wine.del = red.wine[-c(833, 1600), ]
-red.mdl.del = lm(quality ~ . , data=red.wine.del)
+red.wine.inf = red.wine[-1600, ]
+red.mdl.inf = lm(quality ~ . , data=red.wine.inf)
 red.sum = summary(red.mdl)
-red.sum.del = summary(red.mdl.del)
+red.sum.inf = summary(red.mdl.inf)
 red.mse = mean(red.sum$residuals^2)
-red.mse.del = mean(red.sum.del$residuals^2)
+red.mse.inf = mean(red.sum.inf$residuals^2)
 red.sum
-red.sum.del
+red.sum.inf
 red.mse
-red.mse.del
+red.mse.inf
 ```
 <br />
 Deleting the potential outlier points has almost no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a slight increase in $R^2$, even though the increase does not seem significant. Hence, we conclude that points 653 and 833 are not influential.
@@ -466,7 +466,7 @@ Cook's distance is one of the ways to measure a point's influence by considering
 Points with large values of $D_i$ can be interpreted as an influential point.
 
 ```{r}
-red.cooksd = cooks.distance(red.mdl.del)
+red.cooksd = cooks.distance(red.mdl)
 max.di = max(red.cooksd)
 max.di
 plot(red.cooksd, pch="*", cex=2, ylab = "Cook's Distance", main="Influential Observations by Cook's Distance for Red Wine") 
@@ -791,14 +791,15 @@ First, we will see the prediction power of our full model with all our regressor
 
 ```{r}
 set.seed(71168)
-sample.n = ceiling(0.8*length(red.wine$quality))
+sample.n = ceiling(0.8*length(red.wine.inf$quality))
 
+par(mfrow = c(3,3))
 for(i in 1:5){
-  train.sample = sample(c(1:length(red.wine$quality)),sample.n)
+  train.sample = sample(c(1:length(red.wine.inf$quality)),sample.n)
   train.sample = sort(train.sample)
   
-  train.data = red.wine[train.sample,]
-  test.data = red.wine[-train.sample,]
+  train.data = red.wine.inf[train.sample,]
+  test.data = red.wine.inf[-train.sample,]
   
   train.mdl = lm(train.data$quality~., data = train.data)
   summary(train.mdl) 
@@ -844,14 +845,14 @@ Next, let's take a look at the prediction power of our final model with selected
 
 ```{r}
 set.seed(71168)
-sample.n = ceiling(0.8*length(red.wine$quality))
+sample.n = ceiling(0.8*length(red.wine.inf$quality))
 
 for(i in 1:5){
-  train.sample = sample(c(1:length(red.wine$quality)),sample.n)
+  train.sample = sample(c(1:length(red.wine.inf$quality)),sample.n)
   train.sample = sort(train.sample)
   
-  train.data = red.wine[train.sample,]
-  test.data = red.wine[-train.sample,]
+  train.data = red.wine.inf[train.sample,]
+  test.data = red.wine.inf[-train.sample,]
   
   train.fin = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
     total.sulfur.dioxide + pH + sulphates + alcohol, data = train.data)
