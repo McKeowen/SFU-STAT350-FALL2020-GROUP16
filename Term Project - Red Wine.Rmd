@@ -315,7 +315,7 @@ The pairs plot tells us a bit about the relationship between variables in the da
 
 ```{r}
 red.mdl = lm(quality~., data=red.wine)
-summary(red.mdl)
+red.sum = summary(red.mdl)
 ```
 <br />
 
@@ -368,6 +368,7 @@ We will first go over the graphic analysis of the residuals to check if the erro
 ##### Residual vs. Fitted
 
 ```{r}
+par(mfrow=c(2,2))
 plot(red.mdl, which=1)
 ```
 
@@ -407,6 +408,10 @@ Comments on the Scale-Location Plot
 ##### Residuals vs. Leverage
 
 ```{r}
+par(mfrow=c(2,2))
+plot(red.mdl, which=1)
+plot(red.mdl, which=2)
+plot(red.mdl, which=3)
 plot(red.mdl, which=5)
 ```
 
@@ -425,7 +430,7 @@ For the outlier detection, we are going to use externally studentized residuals 
 ```{r}
 ti = rstudent(red.mdl)
 plot(red.mdl$fitted.values, ti, xlab = "Fitted Values", ylab="Externally Studentized Residuals",
-     main="Studentized Residuals vs. Fitted Values")
+     main="Studentized Residuals vs. Fitted Values (Red Wine)")
 ```
 
 <br />
@@ -436,7 +441,7 @@ To investigate the influence of these points on the model, we will obtain an equ
 <br />
 
 ```{r}
-red.wine.del = red.wine[-c(653,833), ]
+red.wine.del = red.wine[-c(833, 1600), ]
 red.mdl.del = lm(quality ~ . , data=red.wine.del)
 red.sum = summary(red.mdl)
 red.sum.del = summary(red.mdl.del)
@@ -464,7 +469,7 @@ Points with large values of $D_i$ can be interpreted as an influential point.
 red.cooksd = cooks.distance(red.mdl)
 max.di = max(red.cooksd)
 max.di
-plot(red.cooksd, pch="*", cex=2, ylab = "Cook's Distance", main="Influential Observations by Cook's Distance") 
+plot(red.cooksd, pch="*", cex=2, ylab = "Cook's Distance", main="Influential Observations by Cook's Distance for Red Wine") 
 abline(h = 10*mean(red.cooksd, na.rm=T), col="red")  # adding the cutoff line
 text(x=1:length(red.cooksd)+1, y=red.cooksd, labels=ifelse(red.cooksd>10*mean(red.cooksd, na.rm=T),names(red.cooksd),""), col="red")
 ```
@@ -481,14 +486,14 @@ Even though the maximum value for the Cook's distance is 0.06885, which is even 
 <br />
 
 ```{r}
-red.wine.del2 = red.wine[-c(152,653,1236), ]
-red.mdl.del2 = lm(quality ~ . , data=red.wine.del2)
-red.sum.del2 = summary(red.mdl.del2)
-red.mse.del2 = mean(red.sum.del2$residuals^2)
+red.wine.inf = red.wine[-1600, ]
+red.mdl.inf = lm(quality ~ . , data=red.wine.inf)
+red.sum.inf = summary(red.mdl.inf)
+red.mse.inf = mean(red.sum.inf$residuals^2)
 red.sum
-red.sum.del2
+red.sum.inf
 red.mse
-red.mse.del2
+red.mse.inf
 ```
 <br />
 Deleting the point increases the $R^2$ and decreases the mean squared error value by just a little bit, which is not exactly what we want. Hence, we conclude that the points 152, 653, and 1236 are not influential.
@@ -508,9 +513,9 @@ Before we go into transforamtion on ordinal variables, we will try some conventi
 First, let's try a log transformation to see if it will improve our regression.
 
 ```{r}
-red.log = lm(log(quality) ~ ., data=red.wine)
+red.log = lm(log(quality) ~ ., data=red.wine.inf)
 red.log.sum = summary(red.log)
-red.sum
+red.sum.inf
 red.log.sum
 ```
 <br />
@@ -525,9 +530,9 @@ Since our goal was to improve the model to better fit the data, we will skip fur
 Next, we will do a square-root transformation to see if it will improve our regression.
 
 ```{r}
-red.sqr = lm(sqrt(quality) ~ ., data=red.wine)
+red.sqr = lm(sqrt(quality) ~ ., data=red.wine.inf)
 red.sqr.sum = summary(red.sqr)
-red.sum
+red.sum.inf
 red.sqr.sum
 ```
 <br />
@@ -566,9 +571,10 @@ We will first define all the possible candidates then compare their adjusted $R^
 First step in choosing the best set of regressors for our model, we will fit all the regression equations involving one, two regressors, and so on. Then we will select the subset of predictors that do the best at meeting some well-defined objective criterion, such as a large adjusted $R^2$ value or the small MSE, Mallow's $C_p$, or AIC.
 
 ```{r}
-red.ols = ols_step_best_subset(red.mdl)
+red.ols = ols_step_best_subset(red.mdl.inf)
+red.ols
 plot(red.ols)
-best.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + pH                + sulphates + alcohol, data=red.wine)
+best.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + pH                + sulphates + alcohol, data=red.wine.inf)
 best.red.sum = summary(best.red)
 ```
 <br />
@@ -584,7 +590,7 @@ Hence, best subset regression tells us that model 7, which has the following var
 * sulphates
 * alcohol
 
-They best meet our criterion, which perfectly aligns with our expectation we had when we saw the large P-values in the full model.
+best meet our criterion, which perfectly aligns with our expectation we had when we saw the large P-values in the full model.
 
 <br />
 
@@ -599,12 +605,12 @@ Since comparing all possible regressions and the best subsets take a lot of time
 Start with a model with no regressors included, then we will add regressors as we go on.
 
 ```{r}
-start.mdl = lm(quality~1, data=red.wine)
-scope.mdl = lm(quality~., data=red.wine)
+start.mdl = lm(quality~1, data=red.wine.inf)
+scope.mdl = lm(quality~., data=red.wine.inf)
 step(start.mdl, direction = "forward", scope=formula(scope.mdl))
 forward.red= lm(quality ~ alcohol + volatile.acidity + sulphates + 
     total.sulfur.dioxide + chlorides + pH + free.sulfur.dioxide, 
-    data = red.wine)
+    data = red.wine.inf)
 forward.red.sum = summary(forward.red)
 ```
 <br />
@@ -627,10 +633,10 @@ Coincidentally, the chosen 7 variables are identical as our choice for best subs
 Start with a model with all the regressors included, then we will eliminate the insignificant regressors as we go on.
 
 ```{r}
-start.mdl2 = lm(quality~., data=red.wine)
+start.mdl2 = lm(quality~., data=red.wine.inf)
 step(start.mdl2, direction = "backward")
 backward.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
-    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
+    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine.inf)
 backward.red.sum = summary(backward.red)
 ```
 <br />
@@ -653,7 +659,7 @@ Again, the chosen 7 variables are identical as our choice for best subsets regre
 Repeat forward selection and backward elimination.
 
 ```{r}
-step(red.mdl, direction= "both")
+step(red.mdl.inf, direction= "both")
 both.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
     total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
 both.red.sum = summary(both.red)
@@ -677,7 +683,7 @@ Now, let's compare all our models by their adjusted $R^2$.
 
 ```{r}
 # Adjusted R-squared for the full model
-red.rsq = red.sum$adj.r.squared
+red.rsq = red.sum.inf$adj.r.squared
 red.rsq
 
 # Adjusted R-squared for best subset regression model
