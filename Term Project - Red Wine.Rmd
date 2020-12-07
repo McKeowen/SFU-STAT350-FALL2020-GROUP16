@@ -73,21 +73,6 @@ Include some basic descriptions including the class and the descriptive statisti
 
 <br />
 
-> New Additional Data Point
-
-Before we begin the data analysis, we will introduce the median point as a new additional data point to the red wine data.
-
-```{r}
-red.datapoints = vector(mode = 'numeric', length = 12)
-red.datapoints = c(2.60, 0, 0, 0.3, 0.001, 0, 3, 0.75, 0.740, 0.11, 6.40, 1)
-red.wine = rbind(red.wine, red.datapoints)
-summary(red.wine)
-```
-<br />
-We now introduced the median point as a new point to the red wine quality data.
-
-<br />
-
 > Data Visualization - Histograms
 
 Data visualization is one of the simplest way to understand our dataset. Histograms or boxplots plot not only the shape of individual variables but also the relationship between them. After this process, we will be able to keep in mind the approximate distribution of each regressors.   
@@ -261,6 +246,21 @@ There are a couple of things that we can see from the boxplots above.
 * Citric acid, free sulfur dioxide, total sulfur dioxide, and alcohol are right-skewed. The skewness of the data would not be fixed even after eliminating the outliers.
 * For other variables, detecting the outliers and fixing them will make the distribution more symmetric. However, some of the outliers seem very far away from the data.
 * Except for density, most of the outliers are on the larger side of the data.
+
+<br />
+
+> New Additional Data Point
+
+Before we begin the data analysis, we will introduce the median point as a new additional data point to the red wine data.
+
+```{r}
+red.datapoints = vector(mode = 'numeric', length = 12)
+red.datapoints = c(2.60, 0, 0, 0.3, 0.001, 0, 3, 0.75, 0.740, 0.11, 6.40, 1)
+red.wine = rbind(red.wine, red.datapoints)
+summary(red.wine)
+```
+<br />
+We now introduced the median point as a new point to the red wine quality data.
 
 <br />
 
@@ -846,6 +846,8 @@ Next, let's take a look at the prediction power of our final model with selected
 ```{r}
 set.seed(71168)
 sample.n = ceiling(0.8*length(red.wine.inf$quality))
+
+par(mfrow = c(3,3))
 
 for(i in 1:5){
   train.sample = sample(c(1:length(red.wine.inf$quality)),sample.n)

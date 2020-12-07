@@ -43,34 +43,6 @@ Include some basic descriptions including the class and the descriptive statisti
 
 <br />
 
-> New Additional Data Point
-
-Before we begin the data analysis, we will introduce the median point as a new additional data point to the white wine data.
-
-```{r}
-white.datapoints = vector(mode = 'numeric', length = 12)
-fixed.cen = (7.30 - mean(white.wine$fixed.acidity))
-vol.cen = (0.32 - mean(white.wine$volatile.acidity))
-citric.cen = (0.39 - mean(white.wine$citric.acid))
-resid.cen = (9.9 - mean(white.wine$residual.sugar))
-chlor.cen = (0.05 - mean(white.wine$chlorides))
-free.cen = (46 - mean(white.wine$free.sulfur.dioxide))
-tot.cen = (167 - mean(white.wine$total.sulfur.dioxide))
-dens.cen = (0.9961 - mean(white.wine$density))
-ph.cen = (3.28 - mean(white.wine$pH))
-sul.cen = (0.55 - mean(white.wine$sulphates))
-alc.cen = (11.40 - mean(white.wine$alcohol))
-white.datapoints = c(fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen, 6)
-white.datapoints
-white.wine = rbind(white.wine, white.datapoints)
-summary(white.wine)
-dim(white.wine)
-```
-<br />
-We now introduced the median point as a new point to the white wine quality data.
-
-<br />
-
 > Data Visualization - Histograms
 
 First, we will generate histograms for the all the variables. This will tell us the approximate distribution of each variables.
@@ -241,6 +213,34 @@ There are a couple of things that we can see from the boxplots above.
 * Residual sugar, density, and alcohol are right-skewed. The skewness of the data would not be fixed even after eliminating the outliers.
 * For other variables, detecting the outliers and fixing them will make the distribution more symmetric. However, some of the outliers seem very far away from the data.
 * Most of the outliers are on the larger side of the data.
+
+<br />
+
+> New Additional Data Point
+
+Before we begin the data analysis, we will introduce the median point as a new additional data point to the white wine data.
+
+```{r}
+white.datapoints = vector(mode = 'numeric', length = 12)
+fixed.cen = (7.30 - mean(white.wine$fixed.acidity))
+vol.cen = (0.32 - mean(white.wine$volatile.acidity))
+citric.cen = (0.39 - mean(white.wine$citric.acid))
+resid.cen = (9.9 - mean(white.wine$residual.sugar))
+chlor.cen = (0.05 - mean(white.wine$chlorides))
+free.cen = (46 - mean(white.wine$free.sulfur.dioxide))
+tot.cen = (167 - mean(white.wine$total.sulfur.dioxide))
+dens.cen = (0.9961 - mean(white.wine$density))
+ph.cen = (3.28 - mean(white.wine$pH))
+sul.cen = (0.55 - mean(white.wine$sulphates))
+alc.cen = (11.40 - mean(white.wine$alcohol))
+white.datapoints = c(fixed.cen, vol.cen, citric.cen, resid.cen, chlor.cen, free.cen, tot.cen, dens.cen, ph.cen, sul.cen, alc.cen, 6)
+white.datapoints
+white.wine = rbind(white.wine, white.datapoints)
+summary(white.wine)
+dim(white.wine)
+```
+<br />
+We now introduced the median point as a new point to the white wine quality data.
 
 <br />
 
@@ -856,14 +856,15 @@ Next, let's take a look at the prediction power of our final model with selected
 
 ```{r}
 set.seed(71168)
-sample.white.n = ceiling(0.8*length(white.wine.del$quality))
+sample.white.n = ceiling(0.8*length(white.wine.inf$quality))
 
+par(mfrow = c(3,3))
 for(i in 1:5){
-  train.white.sample = sample(c(1:length(white.wine.del$quality)),sample.white.n)
+  train.white.sample = sample(c(1:length(white.wine.inf$quality)),sample.white.n)
   train.white.sample = sort(train.white.sample)
   
-  train.white.data = white.wine.del[train.white.sample,]
-  test.white.data = white.wine.del[-train.white.sample,]
+  train.white.data = white.wine.inf[train.white.sample,]
+  test.white.data = white.wine.inf[-train.white.sample,]
   
   train.white.fin = lm(quality ~ fixed.acidity + volatile.acidity + residual.sugar + 
     free.sulfur.dioxide + density + pH + sulphates + alcohol, data = train.white.data)
