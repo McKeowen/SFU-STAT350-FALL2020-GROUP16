@@ -368,7 +368,6 @@ We will first go over the graphic analysis of the residuals to check if the erro
 ##### Residual vs. Fitted
 
 ```{r}
-par(mfrow=c(2,2))
 plot(red.mdl, which=1)
 ```
 
@@ -408,6 +407,19 @@ Comments on the Scale-Location Plot
 ##### Residuals vs. Leverage
 
 ```{r}
+plot(red.mdl, which=5)
+```
+
+<br />
+
+Comments on the Residuals vs. Leverage Plot
+
+<br />
+
+
+##### Overall Residual Plots
+
+```{r}
 par(mfrow=c(2,2))
 plot(red.mdl, which=1)
 plot(red.mdl, which=2)
@@ -435,22 +447,22 @@ plot(red.mdl$fitted.values, ti, xlab = "Fitted Values", ylab="Externally Student
 
 <br />
 
-Identifying the points on the plot, 653 and 833rd data are potential outliers. 
+Identifying the points on the plot, 1600th and 833rd observations potential outliers. 
 To investigate the influence of these points on the model, we will obtain an equation with these two observations deleted.
 
 <br />
 
 ```{r}
-red.wine.inf = red.wine[-1600, ]
-red.mdl.inf = lm(quality ~ . , data=red.wine.inf)
+red.wine.out = red.wine[-c(1600,833), ]
+red.mdl.out = lm(quality ~ . , data=red.wine.out)
 red.sum = summary(red.mdl)
-red.sum.inf = summary(red.mdl.inf)
+red.sum.out = summary(red.mdl.out)
 red.mse = mean(red.sum$residuals^2)
-red.mse.inf = mean(red.sum.inf$residuals^2)
+red.mse.out = mean(red.sum.out$residuals^2)
 red.sum
-red.sum.inf
+red.sum.out
 red.mse
-red.mse.inf
+red.mse.out
 ```
 <br />
 Deleting the potential outlier points has almost no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a slight increase in $R^2$, even though the increase does not seem significant. Hence, we conclude that points 653 and 833 are not influential.
@@ -661,7 +673,7 @@ Repeat forward selection and backward elimination.
 ```{r}
 step(red.mdl.inf, direction= "both")
 both.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
-    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
+    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine.inf)
 both.red.sum = summary(both.red)
 ```
 <br />
@@ -719,7 +731,7 @@ With that in mind, we will assess our final model by investigating the residual 
 
 ```{r}
 fin.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
-    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine)
+    total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine.inf)
 ```
 
 <br />
@@ -775,6 +787,30 @@ Comments on the Residuals vs. Leverage Plot
 
 <br />
 
+
+##### Overall Residual Plots
+
+```{r}
+par(mfrow = c(2,2))
+plot(fin.red, which=1)
+plot(fin.red, which=2)
+plot(fin.red, which=3)
+plot(fin.red, which=5)
+```
+
+<br />
+
+
+> Cook's Distance
+
+```{r}
+red.cooksd2 = cooks.distance(fin.red)
+max.di2 = max(red.cooksd2)
+max.di2
+plot(red.cooksd2, pch="*", cex=2, ylab = "Cook's Distance", main="Influential Observations by Cook's Distance for Red Wine") 
+abline(h = 10*mean(red.cooksd2, na.rm=T), col="red")  # adding the cutoff line
+text(x=1:length(red.cooksd2)+1, y=red.cooksd2, labels=ifelse(red.cooksd2>10*mean(red.cooksd2, na.rm=T),names(red.cooksd2),""), col="red")
+```
 ## Model Validation
 
 Before we jump to any conclusions, we should check the validity of our model. There is a good chance that this data was made so that one can predict the quality of a wine based on specific chemical attributes. 
