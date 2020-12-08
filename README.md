@@ -3,7 +3,7 @@ Final project for STAT 350
 Professor: Derek Bingham  
 Fall 2020 D100  
 
-## Group members:
+## Group 16 members:
 McKeowen Watts  
 Stephanie Jeong  
 Surbhi Negi  
