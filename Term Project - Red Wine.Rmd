@@ -464,7 +464,7 @@ When interpreting Cook's distance, we categorize the values as follows:
 * $D_i$ > 1 : The $i_{th}$ data point is quite likely to be influential
 * If $D_i$ sticks out from the other values, it is most likely to be influential
 
-Even though the maximum value for the Cook's distance is 16.40488, which is a large value.
+The maximum value for the Cook's distance is 16.40488, which is a large value.
 
 <br />
 
