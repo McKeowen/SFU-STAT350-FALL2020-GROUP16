@@ -16,4 +16,4 @@ Dataset: [Link to Red and White wine data](https://archive.ics.uci.edu/ml/datase
 
 Note from the group members: We recommend you pour a glass of your favourite wine before diving into our analysis!  
 
-![Wine]("C:\Users\McKeowen Watts\Desktop\wine.jpg")
+![Wine](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.foodandwine.com%2Fwine-regions&psig=AOvVaw157NCksYqCuePrBZ2VFiIt&ust=1607502396217000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCICG35z7ve0CFQAAAAAdAAAAABAF)
