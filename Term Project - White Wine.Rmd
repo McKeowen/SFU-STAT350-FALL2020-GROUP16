@@ -1,5 +1,5 @@
 ---
-title: "Term Project - White Wine"
+title: "Term Project White Wine"
 output: html_document
 ---
 
@@ -35,7 +35,6 @@ dim(white.wine)
 sapply(white.wine, class)
 white.info = summary(white.wine)
 white.info
-table(is.na(red.wine))
 ```
 <br />
 Include some basic descriptions including the class and the descriptive statistics of the variables. 
@@ -191,7 +190,7 @@ There are a couple of things that we can see from the plots above.
 Now, we will generate boxplots of each variable and see more closely of the distribution of variables.
 
 ```{r}
-par(mfrow = c(1,4))
+par(mfrow = c(3,4))
 boxplot(white.wine$quality, col="slategray2", pch=19, xlab = "quality")
 boxplot(white.wine$fixed.acidity, col="slategray2", pch=19, xlab = "Fixed Acidity")
 boxplot(white.wine$volatile.acidity, col="slategray2", pch=19, xlab = "Volatile Acidity")
@@ -240,37 +239,7 @@ summary(white.wine)
 dim(white.wine)
 ```
 <br />
-We now introduced the median point as a new point to the white wine quality data.
-
-<br />
-
-
-> Correlation
-
-Let's investigate the pair-wise correlation among the regressors.
-
-```{r}
-cor.white = cor(white.wine.del[,-12])
-corrplot.mixed(cor.white, lower.col = 'black', number.cex = .7)
-```
-<br />
-
-The plot above tells us a few things.
-
-There is a high positive correlation between (from strongest to weakest):
-
-* residual sugar and total sulfur dioxide
-* free sulfur dioxide and total sulfur dioxide
-* total sulfur dioxide and density
-
-There is a high negative correlation between (from strongest to weakest):
-
-* density and alcohol
-* total sulfur dioxide and alcohol
-* fixed acidity and pH
-* residual sugar and density
-
-Keeping in mind that there exists correlation between several variables, let's begin our multiple linear regression.
+We now introduced the centered values as a new point to the white wine quality data.
 
 <br />
 
@@ -473,24 +442,7 @@ When interpreting Cook's distance, we categorize the values as follows:
 * $D_i$ > 1 : The $i_{th}$ data point is quite likely to be influential
 * If $D_i$ sticks out from the other values, it is most likely to be influential
 
-Even though the maximum value for the Cook's distance is 0.02267929, which is way smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look. 
-
-We will fit the model by deleting point 3308.
-
-```{r}
-white.wine.inf = white.wine[-4899, ]
-white.mdl.inf = lm(quality ~ . , data=white.wine.inf)
-white.sum.inf = summary(white.mdl.inf)
-white.mse.inf = mean(white.sum.inf$residuals^2)
-white.sum
-white.sum.inf
-white.mse
-white.mse.inf
-```
-<br />
-Deleting the point increases the $R^2$ and the mean squared error value by just a little bit, which is not as desirable. Hence, we conclude that the point 3308 is not influential.
-
-As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
+The maximum value for Cook's distance is 3037.942, which is a large value.
 
 <br />
 
@@ -534,22 +486,6 @@ Since our goal was to improve the model to better fit the data, we will skip fur
 
 <br />
 
-> Ordinal Variable Regression
-
-Taking the discreteness of the quality values into consideration, we will now look into transforming ordinal variables. 
-
-```{r}
-
-#white.wine.del$quality = factor(white.wine.del$quality)
-#white.tran.mdl = polr(quality ~ . , data=white.wine.del, Hess=TRUE)
-#white.tran.sum = summary(white.tran.mdl)
-```
-<br />
-
-Still figuring out how to do this part ...
-
-<br />
-
 ## Variable Selection
 
 As we saw in the beginning, some of the variables did not seem significant to our model. Since incorrect model specification can cause serious problems, we will try to find the most appropriate subset of regressors for our model. 
@@ -568,6 +504,7 @@ white.ols
 plot(white.ols)
 best.white = lm(quality ~ fixed.acidity + volatile.acidity + residual.sugar + free.sulfur.dioxide +                      density + pH + sulphates + alcohol, data=white.wine.inf)
 best.white.sum = summary(best.white)
+best.white.sum
 ```
 <br />
 Looking at the plots above, the increase in $R^2$ and Adjusted $R^2$ almost flattens by model 8. In fact, change in Mallow's $C_p$ statistic and AIC drastically decreases at model 8 as well. 
@@ -605,6 +542,7 @@ forward.white = lm(quality ~ alcohol + volatile.acidity + residual.sugar +
     free.sulfur.dioxide + density + pH + sulphates + fixed.acidity, 
     data = white.wine.inf)
 forward.white.sum = summary(forward.white)
+forward.white.sum
 ```
 <br />
 Our final model has 8 of the 11 possible predictors (written in the order they were added):
@@ -633,6 +571,7 @@ backward.white = lm(quality ~ fixed.acidity + volatile.acidity + residual.sugar 
     free.sulfur.dioxide + density + pH + sulphates + alcohol, 
     data = white.wine.inf)
 backward.white.sum = summary(backward.white)
+backward.white.sum
 ```
 <br />
 Our final model has 8 of the 11 possible predictors (written in their order in the model):
@@ -660,6 +599,7 @@ both.white = lm(quality ~ fixed.acidity + volatile.acidity + residual.sugar +
     free.sulfur.dioxide + density + pH + sulphates + alcohol, 
     data = white.wine.inf)
 both.white.sum = summary(both.white)
+both.white.sum
 ```
 <br />
 Our final model has 8 of the 11 possible predictors (written in their order in the model):
@@ -806,60 +746,6 @@ Before we jump to any conclusions, we should check the validity of our model. Th
 We will perform cross validation in order to see how well our model predicts the quality of white wine. We do this by dividing the dataset in such a way that 80 percent of the dataset is part of the training set and 20 percent of the dataset is the testing set. 
 
 Then we will compare the actual value to the predicted value. We repeat the steps of validation 5 times to check the values of R squared, root mean square error and mean absolute error, which will tell us how the model behaves.
-
-<br />
-
-> Cross Validation - Full Model
-
-First, we will see the prediction power of our full model with all our regressors.
-
-```{r}
-set.seed(71168)
-sample.white.n = ceiling(0.8*length(white.wine.inf$quality))
-
-for(i in 1:5){
-  train.white.sample = sample(c(1:length(white.wine.inf$quality)),sample.white.n)
-  train.white.sample = sort(train.white.sample)
-  
-  train.white.data = white.wine.inf[train.white.sample,]
-  test.white.data = white.wine.inf[-train.white.sample,]
-  
-  train.white.mdl = lm(train.white.data$quality~., data = train.white.data)
-  summary(train.white.mdl) 
-  
-  preds.white = predict(train.white.mdl,test.white.data)
-  
-  plot(test.white.data$quality,preds.white,xlim=c(4,10),ylim=c(4,10))
-  abline(c(0,1))
-  
-  # R-squared
-  R.sq = R2(preds.white, test.white.data$quality)
-  
-  #RMSPE
-  RMSPE = RMSE(preds.white, test.white.data$quality)
-  
-  #MAPE
-  MAPE = MAE(preds.white, test.white.data$quality)
-  
-  print(c(i,R.sq,RMSPE,MAPE))
-}
-```
-<br />
-
-Here are the things that we notice from our numerical output.
-
-* $R^2$ value remains to be small. An ideal model explains at least 80% of the data, while only 31.0% of our model could be explained, which is pretty bad.
-* Root mean square error (or MSPE), the difference between the predicted quality and test quality, is pretty high. Our goal is to have as small a difference as possible, but in our case, it goes up to 0.79. 
-* Mean square error (or MSE) is also pretty high, which is not good. 
-
-<br />
-
-Now, here are the things that we see from our graphical observations.
-
-* When predicting quality 4, the model tends to overestimate the value.
-* When predicting quality 7 and 8, the model tends to underestimate the value.
-* Some of the observations are predictd to have quality 9, even though it is a bit underestimated.
-* Our model does predict quality 5 and 6, the huge variability around the value implies that many points are further away from the centre. Quality 5, especially, seems to be frequently overestimated.
 
 <br />
 
