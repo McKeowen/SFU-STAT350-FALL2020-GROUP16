@@ -224,7 +224,7 @@ There are a couple of things that we can see from the plots above.
 Now, we will generate boxplots of each variable and see more closely of the distribution of variables.
 
 ```{r}
-par(mfrow = c(1,4))
+par(mfrow = c(3,4))
 boxplot(red.wine$quality, col="slategray2", pch=19, xlab = "quality")
 boxplot(red.wine$fixed.acidity, col="slategray2", pch=19, xlab = "Fixed Acidity")
 boxplot(red.wine$volatile.acidity, col="slategray2", pch=19, xlab = "Volatile Acidity")
@@ -260,36 +260,7 @@ red.wine = rbind(red.wine, red.datapoints)
 summary(red.wine)
 ```
 <br />
-We now introduced the median point as a new point to the red wine quality data.
-
-<br />
-
-> Correlation
-
-Let's investigate the pair-wise correlation among the regressors.
-
-```{r}
-cor.red = cor(red.wine[,-12])
-corrplot.mixed(cor.red, lower.col = 'black', number.cex = .7)
-```
-<br />
-
-The plot above tells us a few things.
-
-There is a high positive correlation between :
-
-* fixed acidity and volatile acidity
-* fixed acidity and density
-* free sulfur dioxide and total sulfur dioxide
-
-There is a high negative correlation between (from strongest to weakest):
-
-* fixed acidity and pH
-* volatile acidity and citric acid
-* citric acid and density
-* density and alcohol
-
-Keeping in mind that there exists correlation between several variables, let's begin our multiple linear regression.
+We now introduced the small outlier as a new point to the red wine quality data.
 
 <br />
 
@@ -465,7 +436,7 @@ red.mse
 red.mse.out
 ```
 <br />
-Deleting the potential outlier points has almost no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a slight increase in $R^2$, even though the increase does not seem significant. Hence, we conclude that points 653 and 833 are not influential.
+Deleting the potential outlier points has almost no effect on the estimates of the regression coefficients nor on the residual mean square. In fact, deleting the points causes a slight decrease in $R^2$, even though the increase does not seem significant. Hence, we conclude that points 1600 and 833 are not influential.
 
 Based on the information we acquired from both the residuals vs. fitted values, we may say that the deficiency of the model is due to trying to fit a discrete quality value to a continuous data. 
 
@@ -493,24 +464,7 @@ When interpreting Cook's distance, we categorize the values as follows:
 * $D_i$ > 1 : The $i_{th}$ data point is quite likely to be influential
 * If $D_i$ sticks out from the other values, it is most likely to be influential
 
-Even though the maximum value for the Cook's distance is 0.06885, which is even smaller than 0.5, but since it is still larger than other $D_i$ values, we will take a closer look.
-
-<br />
-
-```{r}
-red.wine.inf = red.wine[-1600, ]
-red.mdl.inf = lm(quality ~ . , data=red.wine.inf)
-red.sum.inf = summary(red.mdl.inf)
-red.mse.inf = mean(red.sum.inf$residuals^2)
-red.sum
-red.sum.inf
-red.mse
-red.mse.inf
-```
-<br />
-Deleting the point increases the $R^2$ and decreases the mean squared error value by just a little bit, which is not exactly what we want. Hence, we conclude that the points 152, 653, and 1236 are not influential.
-
-As mentioned above, this may be due to trying to fit a discrete quality value to a continuous data. 
+Even though the maximum value for the Cook's distance is 16.40488, which is a large value.
 
 <br />
 
@@ -554,21 +508,6 @@ Since our goal was to improve the model to better fit the data, we will skip fur
 
 <br />
 
-> Ordinal Variable Regression
-
-Taking the discreteness of the quality values into consideration, we will now look into transforming ordinal variables. 
-
-```{r}
-
-#red.wine$quality = factor(red.wine$quality)
-#red.tran.mdl = polr(quality ~ . , data=red.wine, Hess=TRUE)
-#red.tran.sum = summary(red.tran.mdl)
-```
-<br />
-
-Still figuring out how to do this part ...
-
-<br />
 
 ## Variable Selection
 
@@ -588,6 +527,7 @@ red.ols
 plot(red.ols)
 best.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + pH                + sulphates + alcohol, data=red.wine.inf)
 best.red.sum = summary(best.red)
+best.red.sum
 ```
 <br />
 Looking at the plots above, the increase in $R^2$ and Adjusted $R^2$ almost flattens by model 7. In fact, change in Mallow's $C_p$ statistic and AIC drastically decreases at model 7 as well. 
@@ -624,6 +564,7 @@ forward.red= lm(quality ~ alcohol + volatile.acidity + sulphates +
     total.sulfur.dioxide + chlorides + pH + free.sulfur.dioxide, 
     data = red.wine.inf)
 forward.red.sum = summary(forward.red)
+forward.red.sum
 ```
 <br />
 Our final model has 7 of the 11 possible predictors (written in the order they were added):
@@ -650,6 +591,7 @@ step(start.mdl2, direction = "backward")
 backward.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
     total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine.inf)
 backward.red.sum = summary(backward.red)
+backward.red.sum
 ```
 <br />
 Our final model has 7 of the 11 possible predictors (written in their order in the model):
@@ -675,6 +617,7 @@ step(red.mdl.inf, direction= "both")
 both.red = lm(quality ~ volatile.acidity + chlorides + free.sulfur.dioxide + 
     total.sulfur.dioxide + pH + sulphates + alcohol, data = red.wine.inf)
 both.red.sum = summary(both.red)
+both.red.sum
 ```
 <br />
 Our final model has 7 of the 11 possible predictors (written in their order in the model):
@@ -818,60 +761,6 @@ Before we jump to any conclusions, we should check the validity of our model. Th
 We will perform cross validation in order to see how well our model predicts the quality of red wine. We do this by dividing the dataset in such a way that 80 percent of the dataset is part of the training set and 20 percent of the dataset is the testing set. 
 
 Then we will compare the actual value to the predicted value. We repeat the steps of validation 5 times to check the values of R squared, root mean square error and mean absolute error, which will tell us how the model behaves.
-
-<br />
-
-> Cross Validation - Full Model
-
-First, we will see the prediction power of our full model with all our regressors.
-
-```{r}
-set.seed(71168)
-sample.n = ceiling(0.8*length(red.wine.inf$quality))
-
-par(mfrow = c(3,3))
-for(i in 1:5){
-  train.sample = sample(c(1:length(red.wine.inf$quality)),sample.n)
-  train.sample = sort(train.sample)
-  
-  train.data = red.wine.inf[train.sample,]
-  test.data = red.wine.inf[-train.sample,]
-  
-  train.mdl = lm(train.data$quality~., data = train.data)
-  summary(train.mdl) 
-  
-  preds = predict(train.mdl,test.data)
-  
-  plot(test.data$quality,preds,xlim=c(4,10),ylim=c(4,10))
-  abline(c(0,1))
-  
-  # R-squared
-  R.sq = R2(preds, test.data$quality)
-  
-  #RMSPE
-  RMSPE = RMSE(preds, test.data$quality)
-  
-  #MAPE
-  MAPE = MAE(preds, test.data$quality)
-  
-  print(c(i,R.sq,RMSPE,MAPE))
-}
-```
-<br />
-
-Here are the things that we notice from our numerical output.
-
-* $R^2$ value remains to be small. An ideal model explains at least 80% of the data, while only 38.4% of our model could be explained.
-* Root mean square error (or MSPE), the difference between the predicted quality and test quality, is pretty high. Our goal is to have as small a difference as possible, but in our case, it goes up to 0.65. 
-* Mean square error (or MSE) is also pretty high, which is not good. 
-
-<br />
-
-Now, here are the things that we see from our graphical observations.
-
-* When predicting quality 4, the model tends to overestimate the value.
-* When predicting quality 7 and 8, the model tends to underestimate the value.
-* Our model does predict quality 5 and 6, the huge variability around the value implies that many points are further away from the centre. 
 
 <br />
 
