@@ -16,4 +16,4 @@ Dataset: [Link to Red and White wine data](https://archive.ics.uci.edu/ml/datase
 
 Note from the group members: We recommend you pour a glass of your favourite wine before diving into our analysis!  
 
-
+![Wine]("C:\Users\McKeowen Watts\Desktop\wine.jpg")
