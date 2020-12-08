@@ -15,3 +15,5 @@ Tedmond Christo
 ## Table of Contents
 
 Link to dataset  
+
+(We recommend you pour a glass of your favourite wine before diving into our analysis!)  
